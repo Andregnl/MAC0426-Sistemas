@@ -1,0 +1,34 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+ 
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    environment:
+      PGUSER: postgres
+      POSTGRES_DB: mac0426db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: pg_isready -h db
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+       
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    network_mode: host
