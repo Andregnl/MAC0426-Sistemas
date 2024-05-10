@@ -1,1 +1,13 @@
 FROM postgres:13-alpine
+
+# Copy the script to the container
+COPY /bd/postgresql_script_criacao_bd.sql /docker-entrypoint-initdb.d/
+
+# Create the postgres user with all permissions (caution: for development only)
+RUN echo "CREATE USER postgres WITH SUPERUSER;" | postgres --username postgres
+
+# Create the database defined in your docker-compose
+ENV POSTGRES_DB=mac0426db
+
+# Run the script to create the database schema (assuming it uses the defined environment variable)
+CMD ["psql", "-h", "localhost", "-U", "postgres", "-W", "-f", "/docker-entrypoint-initdb.d/postgresql_script_criacao_bd.sql"]
