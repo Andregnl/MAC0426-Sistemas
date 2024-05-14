@@ -1,18 +1,7 @@
-//postgre connection pool
+import pg from 'pg'
+import mysql from 'mysql'
 
-// db:
-//     image: postgres
-//     restart: always
-//     environment:
-//       POSTGRES_DB: mac0426db
-//       POSTGRES_USER: mac0426user
-//       POSTGRES_PASSWORD: mac0426password
-//     ports:
-//       - "5432:5432"
-import pkg from 'pg';
-const { Pool } = pkg;
-
-const pool = new Pool({
+const pgPool = new pg.Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'StackOverflow',
@@ -20,15 +9,34 @@ const pool = new Pool({
     port: 5432,
 });
 
-export async function createConnectionPool() {
+const myPool = mysql.createPool({
+    user: 'mysql',
+    host: 'localhost',
+    database: 'StackOverflow',
+    password: '12345',
+    port: 3306,
+});
+
+export async function createPgConnectionPool() {
     try {
-        await pool.connect();
-        console.log("Pool de conexões criado com sucesso");
-        const ret = await pool.query('SELECT * From "Badges" ')
+        await pgPool.connect();
+        console.log("Pool de conexões Postgre criado com sucesso");
+        const ret = await pgPool.query('SELECT * From "Badges" ')
         console.log(ret)
 
-        return pool;
+        return pgPool;
     } catch (error) {
+        console.error("Erro ao criar o pool de conexões:", error);
+    }
+}
+
+export async function createMySqlConnectionPool() {
+    try{
+        await myPool.connect();
+        console.log("Pool de conexões Mysql criado com sucesso");
+        return myPool;
+    }
+    catch(error){
         console.error("Erro ao criar o pool de conexões:", error);
     }
 }

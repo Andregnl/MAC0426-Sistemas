@@ -1,25 +1,19 @@
 import express from 'express'
-import { createConnectionPool } from './database.js'
-//import pkg from 'pg';
+import { createPgConnectionPool, createMySqlConnectionPool } from './database.js'
+import {Queries} from './queries.js'
 
-//const { Pool } = pkg;
+let pgPool;
+let myPool;
 
- 
-let pool;
 
 const app = express()
-const port = 3080
-
-async function getidsbadges() {
-    const result = await pool.query('SELECT * From "Badges" ')
-    console.log(result) 
-    return result
-}
+const port = 3080 //port in which the server will run
 
 async function startApplication() {
     try {
         // Abre o pool de conexões
-        pool = await createConnectionPool();
+        pgPool = await createPgConnectionPool();
+        myPool = await createMySqlConnectionPool();
         // Inicia a aplicação Express
         app.listen(port, () => {
             console.log("Servidor rodando na porta "+ port);
@@ -31,10 +25,12 @@ async function startApplication() {
 
 
 await startApplication()
+const db = new Queries(pgPool, myPool)
+
 
 app.get('/', async (req, res) => {
     console.time('getidsbadges'); // Start the timer
-    const data = await getidsbadges();
+    const data = await db.getidsbadges()
     console.timeEnd('getidsbadges'); // End the timer and print the result
 
     res.send(data)
