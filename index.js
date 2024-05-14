@@ -8,7 +8,7 @@ const port = 3000
 async function startApplication() {
     try {
         // Abre o pool de conexões
-        // createConnectionPool();
+        createConnectionPool();
         // Inicia a aplicação Express
         app.listen(port, () => {
             console.log("Servidor rodando na porta "+ port);
