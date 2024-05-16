@@ -42,6 +42,9 @@ app.get('/', async (req, res) => {
     //    console.log(`${i}: Tempo de resposta: ${diff} ms`);
     //}
     //res.send("Ok")
+
+    "Select * from \"<table>\" where \"<Id>\" "
+
     let basicQueries = [
         "SELECT * FROM Posts WHERE Id = 777;",
         "SELECT * FROM Comments WHERE Id = 10;",
@@ -55,10 +58,20 @@ app.get('/', async (req, res) => {
         "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
     ]
 
-    
-  
-    fs.writeFileSync('tempo_mysql.txt', '\n');
-    for (let qry of basicQueries) {
-        res = await db.testMany(20, qry, "mysql");
+    try {
+        fs.unlinkSync('tempo_mysql.txt');
     }
+    catch (err) {
+        console.error(err)
+    }
+
+    // fs.writeFileSync('tempo_mysql.txt', '\n');
+    
+    await db.testMany(3, basicQueries, "mysql");
+    res.send("OK")  
+})
+
+app.get('/dropIndexes', async (req, res) => {
+    await db.dropAllIndexFromTable("Posts")
+    res.send("OK")
 })

@@ -16,7 +16,7 @@ const myPool = mysql.createPool({
     database: 'StackOverflow',
     password: '12345',
     port: 3306,
-});
+    });
 
 export async function createPgConnectionPool() {
     try {
