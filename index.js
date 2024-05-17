@@ -25,7 +25,6 @@ async function startApplication() {
     }
 }
 
-
 await startApplication()
 
 const db = new Queries(pgPool, myPool)
@@ -80,13 +79,56 @@ app.get('/', async (req, res) => {
     allTests = [
         {
             query: `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "Posts"."PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question'`,
-            index: [
-                { column_name: `"PostTypeId"`, table_name: `"Posts"` }
-            ]}
+            index:  [
+                        { column_name: `"PostTypeId"`, table_name: `"Posts"` }
+                    ]
+        }]
+    /*    
+    allTests = [
+        {
+            query: `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "Posts"."PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question'`,
+            index:  [
+                        { column_name: `"PostTypeId"`, table_name: `"Posts"` }
+                    ]
+        },  
+        {
+            query: `SELECT "Id", "CreationDate" FROM "Posts" WHERE "CreationDate" >= '2010-01-01' AND "CreationDate" < '2010-05-11';`,
+            index : [
+                        {column_name: `"CreationDate"`, table_name: `"Posts"`}
+                    ]
+        },
+        {
+            query: `SELECT "Users"."Id" FROM "Users" WHERE "UpVotes" > 50 AND "Upvotes" < 60;`,
+            index : [
+                        {column_name: `"UpVotes"`, table_name: `"Users"`}
+                    ]
+        },
+        {
+            query: `SELECT "Comments"."Id", "Views" FROM "Comments" JOIN "Users" ON "Comments"."UserId" = "Users"."Id" ORDER BY "Views" DESC;`,
+            index : [
+                        {column_name: `"UserId"`, table_name: `"Comments"`},
+                        {column_name: `"Views"`, table_name: `"Users"`}
+                    ]
+        },
+        {
+            query: `SELECT "P"."Id", "V"."VoteTypeId" FROM "Posts" as "P" JOIN "Votes" as "V" ON "P"."Id" = "V"."PostId" WHERE "V"."VoteTypeId" = 3;
+            `,
+            index : [
+                        {column_name: `"PostId"`, table_name: `"Votes"`},
+                        {column_name: `"VoteTypeId"`, table_name: `"Votes"`}
+                    ]
+        },
+        {
+            query: `SELECT Users.Id, Users.DisplayName, UserBadges1.Name, UserBadges2.Name FROM (( Users JOIN Badges AS UserBadges1 ON Users.Id = UserBadges1.UserId) JOIN Badges AS UserBadges2 ON (UserBadges1.UserId = UserBadges2.UserId AND UserBadges1.Name != UserBadges2.Name)) WHERE UserBadges1.Name = 'Editor' AND UserBadges2.Name = 'Supporter';`,
+            index : [
+                        {column_name: `"UserId"`, table_name: `"Badges"`},
+                        {column_name: `"Name"`, table_name: `"Badges"`}
+                    ]
+        }    
     ]
+    */
 
     // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
-
 
     try {
         fs.unlinkSync('tempo_mysql.txt');
