@@ -32,6 +32,7 @@ const db = new Queries(pgPool, myPool)
 
 
 app.get('/', async (req, res) => {
+    console.log("Requisição recebida")	
     //let data;
     //for (let i = 0; i < 20; i++) {
     //    const iniDate = new Date();
@@ -43,32 +44,72 @@ app.get('/', async (req, res) => {
     //}
     //res.send("Ok")
 
+    var testResults = []
+    let results = []
+
     "Select * from \"<table>\" where \"<Id>\" "
 
-    let basicQueries = [
-        "SELECT * FROM Posts WHERE Id = 777;",
-        "SELECT * FROM Comments WHERE Id = 10;",
-        "SELECT * FROM Badges WHERE Id = 83663;",
-        "Select * FROM Users WHERE Id = 7670379;",
-        "Select * FROM Votes WHERE Id = 5503;",
-        "SELECT * FROM Posts WHERE Id > 30 AND Id < 1000;",
-        "SELECT * FROM Comments WHERE Id > 10 AND Id < 50;",
-        "SELECT * FROM Badges WHERE Id > 83663 AND Id < 725012;",
-        "Select * FROM Users WHERE Id > 4 AND Id < 7670379;",
-        "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
+
+    /*
+        {
+            query: `SELECT * FROM "Posts" WHERE "Id" = 777;`,
+            index: [
+                { column_name: `column_name`, table_name:`table_name` },
+                { column_name: `column_name`, table_name:`table_name` }
+            ]
+        },
+        
+        */
+
+    let allTests = [
+        {
+            query: `SELECT * FROM "Posts" WHERE "Id" = 777;`,
+            index: [
+            ]
+        },
+        `SELECT * FROM "Comments" WHERE "Id" = 10;`,
+        `SELECT * FROM "Badges" WHERE "Id" = 83663;`,
+        `Select * FROM "Users" WHERE "Id" = 7670379;`,
+        `Select * FROM "Votes" WHERE "Id" = 5503;`,
+        `SELECT * FROM "Posts" WHERE "Id" > 30 AND "Id" < 1000;`,
+        `SELECT * FROM "Comments" WHERE Id > 10 AND "Id" < 50;`,
+        `SELECT * FROM "Badges" WHERE "Id" > 83663 AND "Id" < 725012;`,
+        `SELECT * FROM "Users" WHERE "Id" > 4 AND "Id" < 7670379;`,
     ]
+
+    allTests = [
+        {
+            query: `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "Posts"."PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question'`,
+            index: [
+                { column_name: `"PostTypeId"`, table_name: `"Posts"` }
+            ]}
+    ]
+
+    // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
+
 
     try {
         fs.unlinkSync('tempo_mysql.txt');
     }
     catch (err) {
+        console.error('Nao consegui apagar o arquivo tempo_mysql.txt')
+    }
+
+    results = await db.testManyWithIndex(2, allTests, "mysql");
+
+    fs.appendFileSync(`tempo_mysql.txt`, JSON.stringify(results) + '\n');
+    
+    try {
+        fs.unlinkSync('tempo_postgres.txt');
+    }
+    catch (err) {
         console.error(err)
     }
 
-    // fs.writeFileSync('tempo_mysql.txt', '\n');
-    
-    await db.testMany(3, basicQueries, "mysql");
-    res.send("OK")  
+    results = await db.testManyWithIndex(2, allTests, "pg");
+
+    fs.appendFileSync(`tempo_postgres.txt`, JSON.stringify(results) + '\n');
+    res.send("Ok")
 })
 
 app.get('/dropIndexes', async (req, res) => {
