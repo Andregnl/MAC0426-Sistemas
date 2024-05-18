@@ -19,20 +19,19 @@ export class Queries {
         return result;
     }
 
-    async dropAllIndexFromTable(table, db = "pg") {
-        if (db == "mysql") {
-            const sql = "SHOW INDEX FROM " + table;
-            const result = await this.myPool.query(sql);
-            console.log(result);
-        } else if (db == "pg") {
-            const sql = `SELECT indexname FROM pg_indexes WHERE tablename = "${table}"`;
-            const result = await this.pgPool.query(sql);
-            console.log(result);
+    async dropAllIndexFromTable(table) {
+        const sql = `SHOW INDEX FROM ${table}`;
+        let result = await this.myPool.query(sql);
+        for (const row of result) {
+            // Verifica se o índice não é a chave primária e não é uma chave estrangeira
+            if (row.Key_name !== 'PRIMARY' && row.Index_type === 'BTREE') {
+                const dropIndexSql = `ALTER TABLE ${table} DROP INDEX ${row.Key_name}`;
+                await this.myPool.query(dropIndexSql);
+            }
         }
-        return;
 
-        //results[0].RowDataPacket.Column_name
-        //results[0].RowDataPacket.Key_name
+        // results[0].RowDataPacket.Column_name
+        // results[0].RowDataPacket.Key_name
         // let dropIndex = []
         // for (let i = 0; i < result.length; i++) {
         //     dropIndex.push(`DROP INDEX ${result[i].Key_name}`)
@@ -40,40 +39,69 @@ export class Queries {
     }
 
     async runQuery(sql, db) {
-        console.log("Consulta: ",sql, " |base: ",db);
+        console.log("Consulta: ", sql, " |base: ", db);
         let res;
-        if (db === "pg") res = await this.pgPool.query(sql);
+        if (db === "pg") {
+            res = await this.pgPool.query(sql);
+            res = res.rows;
+        }
         else if (db === "mysql") {
             sql = sql.replace(/"/g, "");
-            res = await this.myPool.query(sql);
+            console.log("res: ", res)
         }
+        //if index in sql console.log
+        if (sql.includes("CREATE INDEX") || sql.includes("DROP INDEX")) console.log("res: ", res);
+        console.log("res lentgh: ", res?.length)
         return res;
     }
 
-    async createIndex (indexType = "BTree", allIndex, db) {
+    async createIndex(indexType = "BTREE", allIndex, db) {
         let index_name = ''
         let queryDropIndex = []
-        for (let index of allIndex){
+        for (let index of allIndex) {
             let index_table_name = index.table_name;
             let index_column_name = index.column_name;
+            let indexTypeQry = ''
             index_name = index.column_name + "_" + index.table_name;
             if (db == "mysql") {
                 index_table_name = index_table_name.replace(/"/g, "");
                 index_column_name = index_column_name.replace(/"/g, "");
+                if (indexType == "BTREE") {
+                    // this.runQuery("SET @innodb_adaptive_hash_index = 0", db)
+                }
+                else if (indexType == "HASH") {
+                    // this.runQuery("SET @innodb_adaptive_hash_index = 1", db)
+                }
+            }
+            else if (db = "pg") {
+                indexTypeQry = " USING " + indexType;
             }
             index_name = index_name.replace(/"/g, "");
-            let index_qry = `CREATE INDEX ${index_name} ON ${index_table_name} (${index_column_name})`;
+            let index_qry = `CREATE INDEX ${index_name} ON ${index_table_name}  ${indexTypeQry}  (${index_column_name})`;
             let dropIndex = `DROP INDEX ${index_name}`;
-            if(db == "mysql") dropIndex = `DROP INDEX ${index_name} ON ${index_table_name}`;
+            if (db == "mysql") dropIndex = `DROP INDEX ${index_name} ON ${index_table_name}`;
             queryDropIndex.push(dropIndex);
-            await this.runQuery(index_qry, db);
+            try {
+                await this.runQuery(index_qry, db);
+            }
+            catch (err) {
+                if (err?.sqlMessage) console.log("erro ao criar index: ", err.sqlMessage);
+                else console.log("erro ao criar index: ", err);
+            }
         }
 
         return queryDropIndex;
     }
 
-    async destroyIndexes(queryDropIndex) {
-        for(let qry of queryDropIndex) await this.runQuery(qry)
+    async destroyIndexes(queryDropIndex, db) {
+        for (let qry of queryDropIndex) {
+            try {
+                await this.runQuery(qry, db)
+            } catch (err) {
+                if (err?.sqlMessage) console.log("erro ao deletar index: ", err.sqlMessage);
+                else console.log("erro ao deletar index: ", err);
+            }
+        }
     }
 
     // os indice usado vão ser 2 no postgres: hash, btree
@@ -108,12 +136,14 @@ export class Queries {
     // 6.Busca em consultas aninhadas
     // 7.Busca em resultados de operações de agrupamento e agregação
 
-    async testManyWithIndex(tests = 10, qryList, indexList, db = "pg", indexType = "BTree") {
+    async testManyWithIndex(tests = 10, qryList, indexList, db = "pg", indexType) {
 
         let tempoDiff = [];
         let results = {};
-        let dropQueries = await this.createIndex(indexType, indexList, db);
-        
+        let dropQueries;
+
+        if (indexType) dropQueries = await this.createIndex(indexType, indexList, db);
+
         for (let i = 0; i < tests; i++) {
             for (let qry of qryList) {
                 const iniTime = process.hrtime();
@@ -127,7 +157,7 @@ export class Queries {
             }
         }
 
-        await this.destroyIndexes(dropQueries, db)
+        if (indexType) await this.destroyIndexes(dropQueries, db)
         console.log("results: ", results);
         return results;
     }

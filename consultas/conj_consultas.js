@@ -12,12 +12,16 @@ export const consultasItem2 = [
 
 // item 3
 export const consultasItem3 = [
-    `SELECT "Id", "CreationDate" FROM "Posts" WHERE "CreationDate" >= '2010-01-01' AND "CreationDate" < '2010-05-11';"`,
-    `SELECT "Users"."Id" FROM "Users" WHERE "Users"."UpVotes" > 50 AND "Users"."UpVotes" < 60;`
+    `SELECT "Id", "CreationDate" FROM "Posts" WHERE "CreationDate" >= '2010-01-01' AND "CreationDate" < '2010-05-11';   `,
+    `SELECT "Users"."Id" FROM "Users" WHERE "Users"."UpVotes" > 50 AND "Users"."UpVotes" < 60;`,
+    `SELECT "Users"."Id" FROM "Users" WHERE "Users"."Age" > 40 AND "Users"."Age" < 50`,
+    `SELECT "Users"."Id" FROM "Users" WHERE "Users"."Views" > 100 AND "Users"."Views" < 500`,
 ]
 export const indexesItem3 = [
     { column_name: `"CreationDate"`, table_name: `"Posts"` },
-    { column_name: `"UpVotes"`, table_name: `"Users"` }
+    { column_name: `"UpVotes"`, table_name: `"Users"` },
+    { column_name: `"Age"`, table_name: `"Users"` },
+    { column_name: `"Views"`, table_name: `"Users"` },
 ]
 
 // item 5
@@ -43,7 +47,7 @@ export const indexesItem5 = [
     { column_name: `"PostId"`, table_name: `"Votes"` },
     { column_name: `"VoteTypeId"`, table_name: `"Votes"` },
     { column_name: `"UserId"`, table_name: `"Badges"` },
-    { column_name: `"Name"`, table_name: `"Badges"` }
+//    { column_name: `"Name"`, table_name: `"Badges"` } pra texto precisa de outro tipo de index
 ]
 
 // item 6
