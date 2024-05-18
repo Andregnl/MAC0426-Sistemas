@@ -24,21 +24,24 @@ export const indexesItem3 = [
     { column_name: `"Views"`, table_name: `"Users"` },
 ]
 
+// item 4
+export const consultasItem4 = [
+    `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question';`,
+    `SELECT Posts.Id, Posts.Body, PostTypes.Type FROM Posts JOIN PostTypes ON PostTypeId = PostTypes.Id WHERE MATCH (PostTypes.Type) AGAINST ('Question' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
+    `SELECT Id, DisplayName FROM Users WHERE LOWER(DisplayName) LIKE 'jon %' OR LOWER(DisplayName) LIKE 'jon' OR LOWER(DisplayName) LIKE 'jon-%' OR LOWER(DisplayName) LIKE '% jon' OR LOWER(DisplayName) LIKE 'jon.%' OR LOWER(DisplayName) LIKE '%-jon';;`,
+    `SELECT Id, DisplayName FROM Users WHERE MATCH (DisplayName) AGAINST ('Jon ' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
+    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Legendary';`,
+    `SELECT * FROM Badges WHERE MATCH (Name) AGAINST ('Legendary' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
+    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Nice Answer';`,
+    `SELECT * FROM Badges WHERE MATCH (Name) AGAINST ('"Nice Answer"' IN BOOLEAN MODE);` // Usando índice de texto
+    
+]
+
 // item 5
 export const consultasItem5 = [
     `SELECT "Comments"."Id", "Views" FROM "Comments" JOIN "Users" ON "Comments"."UserId" = "Users"."Id" ORDER BY "Views" DESC;`,
     `SELECT "P"."Id", "V"."VoteTypeId" FROM "Posts" as "P" JOIN "Votes" as "V" ON "P"."Id" = "V"."PostId" WHERE "V"."VoteTypeId" = 3;`,
     `SELECT "Users"."Id", "Users"."DisplayName", "UserBadges1"."Name", "UserBadges2"."Name" FROM (( "Users" JOIN "Badges" AS "UserBadges1" ON "Users"."Id" = "UserBadges1"."UserId") JOIN "Badges" AS "UserBadges2" ON ("UserBadges1"."UserId" = "UserBadges2"."UserId" AND "UserBadges1"."Name" != "UserBadges2"."Name")) WHERE "UserBadges1"."Name" = 'Editor' AND "UserBadges2"."Name" = 'Supporter';`,
-]
-
-// item 4
-export const consultasItem4 = [
-    `SELECT "Title" FROM "Posts" WHERE "Title" LIKE '%teste%';`,
-    `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question';`,
-    `SELECT "Id", "Text" FROM "Comments" WHERE "Text" LIKE '%java%';`,
-    `SELECT "Id", "DisplayName" FROM "Users" WHERE "DisplayName" LIKE '%Jon %';`,
-    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Legendary';`,
-    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Nice Answer';`,
 ]
 
 export const indexesItem5 = [
@@ -109,9 +112,27 @@ export const consultasItem6 = [
         WHERE "DownVotes" > 10000;
         `
 ]
+export const indexesItem6 = [
+    { column_name: `"UpVotes"`, table_name: `"Users"` },
+    { column_name: `"UserId"`, table_name: `"Votes"` },
+    { column_name: `"DownVotes"`, table_name: `"Users"` },
+    { column_name: `"VoteTypeId"`, table_name: `"Votes"` },
+    { column_name: `"OwnerUserId"`, table_name: `"Posts"` },
+    { column_name: `"UserId"`, table_name: `"Badges"` },
+    { column_name: `"UserId"`, table_name: `"Comments"` },
+    { column_name: `"PostsId"`, table_name: `"PostLinks"` },
+    { column_name: `"PostId"`, table_name: `"Comments"` },
+    { column_name: `"RelatedPostId"`, table_name: `"PostLinks"` },
+    { column_name: `"UserId"`, table_name: `"Badges"` },
+    { column_name: `"Reputation"`, table_name: `"Users"` },
+    { column_name: `"CreationDate"`, table_name: `"Users"` },
+    { column_name: `"Views"`, table_name: `"Users"` },
+]
 
 export const consultasItem7 = [
-        `SELECT "Users"."Id", COUNT("Badges"."Id") AS "badgeCount" FROM "Users" INNER JOIN "Badges" ON "Users"."Id" = "Badges"."UserId" WHERE "DownVotes" > 100 ORDER BY "badgeCount" DESC;`,
+        `SELECT "Users"."Id", COUNT("Badges"."Id") AS "badgeCount" 
+        FROM "Users" INNER JOIN "Badges" ON "Users"."Id" = "Badges"."UserId" 
+        WHERE "DownVotes" > 100 ORDER BY "badgeCount" DESC;`,
         
         `SELECT "U"."Id"
         FROM (SELECT "Id", "UpVotes"
@@ -139,4 +160,12 @@ export const consultasItem7 = [
         `SELECT "Id"
         FROM "Users"
         WHERE "DownVotes" > (SELECT AVG("DownVotes") FROM "Users");`
+]
+
+export const indexesItem7 = [
+    { column_name: `"UserId"`, table_name: `"Badges"` },
+    { column_name: `"DownVotes"`, table_name: `"Users"` },
+    { column_name: `"Reputation"`, table_name: `"Users"` },
+    { column_name: `"UpVotes"`, table_name: `"Users"` },
+    { column_name: `"Views"`, table_name: `"Users"` },
 ]
