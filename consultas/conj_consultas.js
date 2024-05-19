@@ -1,3 +1,28 @@
+import { promises as fs } from 'fs';
+
+let bigText;
+export async function item1ConsultaBigText() {
+        let consultaBigText;
+        const data = await fs.readFile("./consultas/bigText.txt")
+        bigText = data.toString();
+        consultaBigText = `INSERT INTO Posts (AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, Id, LastActivityDate,LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount)
+            VALUES (31, 5, ${bigText}, NULL, 0, NULL, '2008-07-31 22:08:09', 10, 12496714, '2016-03-19 06:10:52', '2016-03-19 06:05:48', 'Rich B', 63550, 9, NULL, 1, 256, '<html><css><css3><internet-explorer-7>', 'Percentage width child element in absolutely positioned parent on Internet Explorer 7', 16306);`
+
+      return consultaBigText
+}
+
+// item 1
+export let consultasItem1 = [
+    `INSERT INTO "Comments" ("CreationDate", "PostId", "Score", "Text", "UserId") VALUES ('2024-05-10 10:00:00', 12496714, 100, 'Comentário 1', 2346543)`,
+    
+    `INSERT INTO "Users" ("AboutMe", "Age", "CreationDate", "DisplayName", "DownVotes", "EmailHash", "LastAccessDate", "Location", "Reputation", "UpVotes", "Views", "WebsiteUrl", "AccountId") VALUES (
+  "I am a test user, I am here to test the database", 0, '2024-05-10 10:00:00', 'zE silva', 0, 'blahblah', '2024-05-10 10:00:00', 'Brasil', 1000000, 1000000, 1000000, 'https://www.google.com.br', 2346543,)`,
+  
+  `INSERT INTO Posts (AcceptedAnswerId, AnswerCount, Body, ClosedDate, CommentCount, CommunityOwnedDate, CreationDate, FavoriteCount, Id, LastActivityDate, LastEditDate, LastEditorDisplayName, LastEditorUserId, OwnerUserId, ParentId, PostTypeId, Score, Tags, Title, ViewCount)
+    VALUES (31, 5, '<p>I have an absolutely positioned <code>div</code> containing several children, one of which is a relatively positioned <code>div</code>. When I use a <strong>percentage-based width</strong> on the child <code>div</code>, it collapses to \'0\' width on <a href="http://en.wikipedia.org/wiki/Internet_Explorer_7" rel="noreferrer">Internet&nbsp;Explorer&nbsp;7</a>, but not on Firefox or Safari.</p> <p>If I use <strong>pixel width</strong>, it works. If the parent is relatively positioned, the percentage width on the child works.</p> <ol> <li>Is there something Im missing here?</li> <li>Is there an easy fix for this besides the <em>pixel-based width</em> on the child?</li> <li>Is there an area of the CSS specification that covers this?</li> </ol>',
+      NULL, 0, NULL, '2008-07-31 22:08:09', 10, 12496714, '2016-03-19 06:10:52', '2016-03-19 06:05:48', 'Rich B', 63550, 9, NULL, 1, 256, '<html><css><css3><internet-explorer-7>', 'Percentage width child element in absolutely positioned parent on Internet Explorer 7', 16306);`      
+]
+
 // item 2
 export const consultasItem2 = [
     `SELECT * FROM "Comments" WHERE "Id" = 10;`,
@@ -26,15 +51,49 @@ export const indexesItem3 = [
 
 // item 4
 export const consultasItem4 = [
-    `SELECT "Posts"."Id", "Posts"."Body", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question';`,
-    `SELECT Posts.Id, Posts.Body, PostTypes.Type FROM Posts JOIN PostTypes ON PostTypeId = PostTypes.Id WHERE MATCH (PostTypes.Type) AGAINST ('Question' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
-    `SELECT Id, DisplayName FROM Users WHERE LOWER(DisplayName) LIKE 'jon %' OR LOWER(DisplayName) LIKE 'jon' OR LOWER(DisplayName) LIKE 'jon-%' OR LOWER(DisplayName) LIKE '% jon' OR LOWER(DisplayName) LIKE 'jon.%' OR LOWER(DisplayName) LIKE '%-jon';;`,
-    `SELECT Id, DisplayName FROM Users WHERE MATCH (DisplayName) AGAINST ('Jon ' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
+
+    `SELECT "Posts"."Id", "PostTypes"."Type" FROM "Posts" JOIN "PostTypes" ON "PostTypeId" = "PostTypes"."Id" WHERE "PostTypes"."Type" LIKE 'Question';`,
+    `SELECT "Id", "DisplayName" FROM "Users" WHERE LOWER("DisplayName") LIKE 'jon %' OR LOWER("DisplayName") LIKE 'jon' OR LOWER("DisplayName") LIKE 'jon-%' OR LOWER("DisplayName") LIKE '% jon' OR LOWER("DisplayName") LIKE 'jon.%' OR LOWER("DisplayName") LIKE '%-jon';`,
     `SELECT * FROM "Badges" WHERE "Name" LIKE 'Legendary';`,
-    `SELECT * FROM Badges WHERE MATCH (Name) AGAINST ('Legendary' IN NATURAL LANGUAGE MODE);` // Usando índice de texto
-    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Nice Answer';`,
-    `SELECT * FROM Badges WHERE MATCH (Name) AGAINST ('"Nice Answer"' IN BOOLEAN MODE);` // Usando índice de texto
-    
+    `SELECT * FROM "Badges" WHERE "Name" LIKE 'Supporter';`,
+]
+
+export const consultasItem4IndicesMysql = [
+    `SELECT "Posts"."Id", "PostTypes"."Type"
+    FROM "Posts"
+    JOIN "PostTypes" ON "PostTypeId" = "PostTypes"."Id"
+    WHERE MATCH ("PostTypes"."Type") AGAINST ('Question' IN NATURAL LANGUAGE MODE);`,
+
+    `SELECT "Id", "DisplayName"
+    FROM "Users"
+    WHERE MATCH ("DisplayName") AGAINST ('Jon ' IN NATURAL LANGUAGE MODE);`,
+
+    `SELECT *
+    FROM "Badges"
+    WHERE MATCH ("Name") AGAINST ('"Legendary"' IN NATURAL LANGUAGE MODE);`,
+
+    `SELECT *
+    FROM "Badges"
+    WHERE MATCH ("Name") AGAINST ('"Supporter"' IN NATURAL LANGUAGE MODE);`
+]
+
+export const consultasItem4IndicesPostgres = [
+    `SELECT "Posts"."Id", "PostTypes"."Type"
+    FROM "Posts"
+    JOIN "PostTypes" ON "Posts"."PostTypeId" = "PostTypes"."Id"
+    WHERE to_tsvector('english', "PostTypes"."Type") @@ to_tsquery('english', 'Question');`,
+
+    `SELECT "Id", "DisplayName"
+    FROM "Users"
+    WHERE to_tsvector('english', "DisplayName") @@ to_tsquery('english', 'Jon');`,
+
+    `SELECT *
+    FROM "Badges"
+    WHERE to_tsvector('english', "Name") @@ to_tsquery('english', 'Legendary');`,
+
+    `SELECT *
+    FROM "Badges"
+    WHERE to_tsvector('english', "Name") @@ to_tsquery('english', 'Supporter');`
 ]
 
 // item 5
@@ -55,63 +114,90 @@ export const indexesItem5 = [
 
 // item 6
 export const consultasItem6 = [
-        `SELECT * FROM "Posts" WHERE "Id" IN
-        (
-        SELECT "PostId" 
-        FROM "Votes" 
-        WHERE "UserId" IN (
-                        SELECT "Id" 
-                        FROM "Users" 
-                        WHERE "DownVotes" = (
-                            SELECT MAX("Downvotes")         
-                            FROM "Users"))
-                AND "VoteTypeId" = 2);`,
-
-
-        `SELECT * 
-        FROM "Posts" 
-        WHERE "OwnerUserId" IN (SELECT "Users"."Id", COUNT("Badges"."Id") AS "badgeCount" 
-                            FROM "Users" JOIN "Badges" ON "Id" = "UserId"
-                            WHERE "badgeCount" = (SELECT MAX(COUNT("Badges"."Id")) FROM "Badges" GROUP BY "UserId"));
-        `  ,
-        `SELECT "Id"
+    `SELECT * 
+    FROM "Posts" 
+    WHERE "Id" IN (
+      SELECT "PostId" 
+      FROM "Votes" 
+      WHERE "UserId" IN (
+        SELECT "Id" 
         FROM "Users" 
-        WHERE "Id" IN (
-                    SELECT "post_comment"."UserId" as "Id"
-                    FROM "Comments" as "post_comment", "Comments" as "related_post_comment", "Posts" as "post", "PostLinks" as "post_link"
-                    WHERE "post"."Id" = "post_link"."PostId" AND
-                        "post_comment"."PostId" = "post"."Id" AND
-                        "related_post_comment"."Id" = "post_link"."RelatedPostId" AND
-                        "post_comment"."UserId" = "related_post_comment"."UserId"
-        );`,
-        `SELECT "Id", "Reputation", "UpVotes" FROM "Users" ORDER BY "Reputation" DESC, "UpVotes" ASC;
-        `,
-        `SELECT "U"."Id"
+        WHERE "DownVotes" = (SELECT MAX("DownVotes") FROM "Users")
+      )
+      AND "VoteTypeId" = 2
+    );`,
+    
+    `SELECT *
+    FROM "Posts" 
+    WHERE "OwnerUserId" IN (
+        SELECT "UserId"
         FROM (
-        SELECT "Id", "UpVotes"
-        FROM Users
-        WHERE "Reputation" = (SELECT MAX("Reputation") FROM "Users")
-        ) As "U"
-        WHERE "UpVotes" < 10;
-        `,
-        `SELECT "U"."Id", "U"."DisplayName", "U"."CreationDate", "U"."DownVotes"
+            SELECT "Users"."Id" as "UserId", COUNT("Badges"."Id") AS "badgeCount" 
+            FROM "Users" 
+            JOIN "Badges" ON "Users"."Id" = "Badges"."UserId"
+            GROUP BY "Users"."Id"
+        ) AS "UserBadges"
+        WHERE "badgeCount" = (
+            SELECT MAX("badgeCount")
+            FROM (
+                SELECT COUNT("Badges"."Id") AS "badgeCount" 
+                FROM "Users" 
+                JOIN "Badges" ON "Users"."Id" = "Badges"."UserId"
+                GROUP BY "Users"."Id"
+            ) AS "MaxBadgeCounts"
+        )
+    );`,
+    
+    `SELECT "Id"
+    FROM "Users" 
+    WHERE "Id" IN (
+      SELECT "pc"."UserId"
+      FROM (
+        SELECT "post_comment"."UserId", "post_comment"."PostId"
+        FROM "Comments" AS "post_comment", "Posts" AS "post"
+        WHERE "post_comment"."PostId" = "post"."Id"
+      ) AS "pc"
+      WHERE "pc"."UserId" IN (
+        SELECT "rpc"."UserId"
         FROM (
-        SELECT "Id", "DisplayName", "DownVotes", "CreationDate"
-        FROM "Users" 
-        WHERE "CreationDate" > '2010-01-01' AND "CreationDate" < '2010-07-01'
-        ) As "U"
-        WHERE "DownVotes" > 100
-        ORDER BY "DownVotes" DESC;
-        `,
-        `SELECT "U"."Id"
-        FROM (
-        SELECT "Id", "DownVotes"
-        FROM "Users"
-        WHERE "Views" > 1000
-        ) As "U"
-        WHERE "DownVotes" > 10000;
-        `
+          SELECT "related_post_comment"."UserId", "pl"."RelatedPostId"
+          FROM "Comments" AS "related_post_comment", "PostLinks" AS "pl"
+          WHERE "related_post_comment"."Id" = "pl"."RelatedPostId"
+        ) AS "rpc"
+        WHERE "pc"."PostId" = "rpc"."RelatedPostId"
+      )
+    );`,
+    
+    `SELECT "Id", "Reputation", "UpVotes"
+    FROM "Users"
+    ORDER BY "Reputation" DESC, "UpVotes" ASC;`,
+    
+    `SELECT "U"."Id"
+    FROM (
+      SELECT "Id", "UpVotes"
+      FROM "Users"
+      WHERE "Reputation" = (SELECT MAX("Reputation") FROM "Users")
+    ) AS "U"
+    WHERE "U"."UpVotes" = (SELECT MIN("UpVotes") FROM "Users" WHERE "Reputation" = (SELECT MAX("Reputation") FROM "Users"));`,
+    
+    `SELECT "U"."Id", "U"."DisplayName", "U"."CreationDate", "U"."DownVotes"
+    FROM (
+      SELECT "Id", "DisplayName", "DownVotes", "CreationDate"
+      FROM "Users" 
+      WHERE "CreationDate" > '2010-01-01' AND "CreationDate" < '2010-07-01'
+    ) AS "U"
+    WHERE "DownVotes" > 100
+    ORDER BY "DownVotes" DESC;`,
+    
+    `SELECT "U"."Id"
+    FROM (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "Views" > 1000
+    ) AS "U"
+    WHERE "DownVotes" > 10000;`    
 ]
+
 export const indexesItem6 = [
     { column_name: `"UpVotes"`, table_name: `"Users"` },
     { column_name: `"UserId"`, table_name: `"Votes"` },
@@ -130,36 +216,50 @@ export const indexesItem6 = [
 ]
 
 export const consultasItem7 = [
-        `SELECT "Users"."Id", COUNT("Badges"."Id") AS "badgeCount" 
-        FROM "Users" INNER JOIN "Badges" ON "Users"."Id" = "Badges"."UserId" 
-        WHERE "DownVotes" > 100 ORDER BY "badgeCount" DESC;`,
-        
-        `SELECT "U"."Id"
-        FROM (SELECT "Id", "UpVotes"
-        FROM "Users"
-        WHERE "Reputation" = (SELECT MAX("Reputation") FROM "Users")
-        ) AS "U"
-        WHERE "UpVotes" = (SELECT MIN("UpVotes") FROM "U");`,
+    `SELECT "Users"."Id", COUNT("Badges"."Id") AS "badgeCount"
+    FROM "Users"
+    INNER JOIN "Badges" ON "Users"."Id" = "Badges"."UserId"
+    WHERE "Users"."DownVotes" > 100
+    GROUP BY "Users"."Id"
+    ORDER BY "badgeCount" DESC;`,
 
-        `SELECT "U"."Id"
-        FROM (
-        SELECT "Id", "DownVotes"
-        FROM "Users"
-        WHERE "CreationDate" = (SELECT MIN("CreationDate") FROM "Users")
-        ) As "U"
-        WHERE "DownVotes" = (SELECT MAX("DownVotes") FROM "U");`,
+`WITH "MinCreationDateUsers" AS (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "CreationDate" = (SELECT MIN("CreationDate") FROM "Users")
+    )
+    SELECT "U"."Id"
+    FROM "MinCreationDateUsers" AS "U"
+    WHERE "U"."DownVotes" = (SELECT MAX("DownVotes") FROM "MinCreationDateUsers");`,
 
-        `SELECT "U"."Id"
-        FROM (
-        SELECT "Id", "DownVotes"
-        FROM "Users"
-        WHERE "Views" = (SELECT MAX("Views") FROM "Users")
-        ) AS "U"
-        WHERE "DownVotes" = (SELECT MAX("DownVotes") FROM "U");`,
+`SELECT "U"."Id"
+    FROM (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "CreationDate" = (SELECT MIN("CreationDate") FROM "Users")
+    ) AS "U"
+    WHERE "U"."DownVotes" = (SELECT MAX("DownVotes") FROM (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "CreationDate" = (SELECT MIN("CreationDate") FROM "Users")
+    ) AS "U");`,
 
-        `SELECT "Id"
-        FROM "Users"
-        WHERE "DownVotes" > (SELECT AVG("DownVotes") FROM "Users");`
+`SELECT "U"."Id"
+    FROM (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "Views" = (SELECT MAX("Views") FROM "Users")
+    ) AS "U"
+    WHERE "U"."DownVotes" = (SELECT MAX("DownVotes") FROM (
+      SELECT "Id", "DownVotes"
+      FROM "Users"
+      WHERE "Views" = (SELECT MAX("Views") FROM "Users")
+    ) AS "U");`,
+
+`SELECT "Id"
+    FROM "Users"
+    WHERE "DownVotes" > (SELECT AVG("DownVotes") FROM "Users");`
+   
 ]
 
 export const indexesItem7 = [
@@ -169,3 +269,40 @@ export const indexesItem7 = [
     { column_name: `"UpVotes"`, table_name: `"Users"` },
     { column_name: `"Views"`, table_name: `"Users"` },
 ]
+
+export const createFullTextIndexPostgres = [
+    `CREATE INDEX "posttypes_type_tsvector_idx" 
+    ON "PostTypes" 
+    USING gin(to_tsvector('english', "Type"));`,
+
+    `CREATE INDEX "users_displayname_tsvector_idx" 
+    ON "Users" 
+    USING gin(to_tsvector('english', "DisplayName"));`,
+
+    `CREATE INDEX "badges_name_tsvector_idx" 
+    ON "Badges" 
+    USING gin(to_tsvector('english', "Name"));`
+]
+
+export const createFullTextIndexMysql = [
+    `CREATE FULLTEXT INDEX posttypes_type_fulltext_idx 
+    ON PostTypes(Type);`,
+
+    `CREATE FULLTEXT INDEX users_displayname_fulltext_idx 
+    ON Users(DisplayName);`,
+
+    `CREATE FULLTEXT INDEX badges_name_fulltext_idx 
+    ON Badges(Name);`
+]
+
+export const dropFullTextIndexPostgres = [
+    `DROP INDEX IF EXISTS "posttypes_type_tsvector_idx";`,
+    `DROP INDEX IF EXISTS "users_displayname_tsvector_idx";`,
+    `DROP INDEX IF EXISTS "badges_name_tsvector_idx";`
+];
+
+export const dropFullTextIndexMysql = [
+    `DROP INDEX posttypes_type_fulltext_idx ON PostTypes;`,
+    `DROP INDEX users_displayname_fulltext_idx ON Users;`,
+    `DROP INDEX badges_name_fulltext_idx ON Badges;`
+];

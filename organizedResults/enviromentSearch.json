@@ -1,0 +1,252 @@
+{
+    "Pg": {
+        "BTree": [
+            {
+                "SELECT \"Id\", \"CreationDate\" FROM \"Posts\" WHERE \"CreationDate\" >= '2010-01-01' AND \"CreationDate\" < '2010-05-11';   ": [
+                    "0.2914",
+                    "0.1423",
+                    "0.1130",
+                    "0.1301",
+                    "0.1250",
+                    "0.1284",
+                    "0.1253",
+                    "0.1134",
+                    "0.1416",
+                    "0.1536"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"UpVotes\" > 50 AND \"Users\".\"UpVotes\" < 60;": [
+                    "0.1321",
+                    "0.1294",
+                    "0.1425",
+                    "0.1204",
+                    "0.1271",
+                    "0.1395",
+                    "0.1733",
+                    "0.1270",
+                    "0.1310",
+                    "0.1425"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Age\" > 40 AND \"Users\".\"Age\" < 50": [
+                    "0.1032",
+                    "0.1157",
+                    "0.1347",
+                    "0.1395",
+                    "0.926",
+                    "0.1343",
+                    "0.798",
+                    "0.1331",
+                    "0.1047",
+                    "0.1982"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Views\" > 100 AND \"Users\".\"Views\" < 500": [
+                    "0.1079",
+                    "0.715",
+                    "0.790",
+                    "0.1096",
+                    "0.625",
+                    "0.1229",
+                    "0.558",
+                    "0.858",
+                    "0.739",
+                    "0.1378"
+                ]
+            },
+            {
+                "SELECT \"Comments\".\"Id\", \"Views\" FROM \"Comments\" JOIN \"Users\" ON \"Comments\".\"UserId\" = \"Users\".\"Id\" ORDER BY \"Views\" DESC;": [
+                    "0.3192",
+                    "0.1337",
+                    "0.1605",
+                    "0.1333",
+                    "0.1488",
+                    "0.1191",
+                    "0.1513",
+                    "0.1276",
+                    "0.1349",
+                    "0.1367"
+                ]
+            },
+            {
+                "SELECT \"P\".\"Id\", \"V\".\"VoteTypeId\" FROM \"Posts\" as \"P\" JOIN \"Votes\" as \"V\" ON \"P\".\"Id\" = \"V\".\"PostId\" WHERE \"V\".\"VoteTypeId\" = 3;": [
+                    "0.1455",
+                    "0.1224",
+                    "0.1620",
+                    "0.1619",
+                    "0.1504",
+                    "0.1330",
+                    "0.1426",
+                    "0.1353",
+                    "0.2016",
+                    "0.1405"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\", \"Users\".\"DisplayName\", \"UserBadges1\".\"Name\", \"UserBadges2\".\"Name\" FROM (( \"Users\" JOIN \"Badges\" AS \"UserBadges1\" ON \"Users\".\"Id\" = \"UserBadges1\".\"UserId\") JOIN \"Badges\" AS \"UserBadges2\" ON (\"UserBadges1\".\"UserId\" = \"UserBadges2\".\"UserId\" AND \"UserBadges1\".\"Name\" != \"UserBadges2\".\"Name\")) WHERE \"UserBadges1\".\"Name\" = 'Editor' AND \"UserBadges2\".\"Name\" = 'Supporter';": [
+                    "0.1190",
+                    "0.1504",
+                    "0.1849",
+                    "0.1577",
+                    "0.1164",
+                    "0.1695",
+                    "0.1784",
+                    "0.1274",
+                    "0.1829",
+                    "0.1479"
+                ]
+            }
+        ],
+        "Hash": [],
+        "NoIndex": []
+    },
+    "MySql": {
+        "BTree": [
+            {
+                "SELECT \"Comments\".\"Id\", \"Views\" FROM \"Comments\" JOIN \"Users\" ON \"Comments\".\"UserId\" = \"Users\".\"Id\" ORDER BY \"Views\" DESC;": [
+                    "0.671",
+                    "0.306",
+                    "0.300",
+                    "0.1471",
+                    "0.284",
+                    "0.319",
+                    "0.311",
+                    "0.289",
+                    "0.296",
+                    "0.289"
+                ]
+            },
+            {
+                "SELECT \"P\".\"Id\", \"V\".\"VoteTypeId\" FROM \"Posts\" as \"P\" JOIN \"Votes\" as \"V\" ON \"P\".\"Id\" = \"V\".\"PostId\" WHERE \"V\".\"VoteTypeId\" = 3;": [
+                    "0.371",
+                    "0.311",
+                    "0.267",
+                    "0.1242",
+                    "0.306",
+                    "0.303",
+                    "0.308",
+                    "0.294",
+                    "0.281",
+                    "0.465"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\", \"Users\".\"DisplayName\", \"UserBadges1\".\"Name\", \"UserBadges2\".\"Name\" FROM (( \"Users\" JOIN \"Badges\" AS \"UserBadges1\" ON \"Users\".\"Id\" = \"UserBadges1\".\"UserId\") JOIN \"Badges\" AS \"UserBadges2\" ON (\"UserBadges1\".\"UserId\" = \"UserBadges2\".\"UserId\" AND \"UserBadges1\".\"Name\" != \"UserBadges2\".\"Name\")) WHERE \"UserBadges1\".\"Name\" = 'Editor' AND \"UserBadges2\".\"Name\" = 'Supporter';": [
+                    "0.273",
+                    "0.296",
+                    "0.282",
+                    "0.286",
+                    "0.320",
+                    "0.287",
+                    "0.274",
+                    "0.1444",
+                    "0.299",
+                    "0.433"
+                ]
+            },
+            {
+                "SELECT \"Id\", \"CreationDate\" FROM \"Posts\" WHERE \"CreationDate\" >= '2010-01-01' AND \"CreationDate\" < '2010-05-11';   ": [
+                    "0.765",
+                    "0.302",
+                    "0.277",
+                    "0.542",
+                    "0.297",
+                    "0.313",
+                    "0.310",
+                    "0.294",
+                    "0.271",
+                    "0.309"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"UpVotes\" > 50 AND \"Users\".\"UpVotes\" < 60;": [
+                    "0.401",
+                    "0.291",
+                    "0.267",
+                    "0.318",
+                    "0.331",
+                    "0.325",
+                    "0.317",
+                    "0.276",
+                    "0.319",
+                    "0.288"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Age\" > 40 AND \"Users\".\"Age\" < 50": [
+                    "0.364",
+                    "0.264",
+                    "0.278",
+                    "0.319",
+                    "0.289",
+                    "0.295",
+                    "0.288",
+                    "0.298",
+                    "0.321",
+                    "0.299"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Views\" > 100 AND \"Users\".\"Views\" < 500": [
+                    "0.326",
+                    "0.269",
+                    "0.279",
+                    "0.308",
+                    "0.289",
+                    "0.284",
+                    "0.291",
+                    "0.267",
+                    "0.309",
+                    "0.270"
+                ]
+            }
+        ],
+        "Hash": [
+            {
+                "SELECT \"Id\", \"CreationDate\" FROM \"Posts\" WHERE \"CreationDate\" >= '2010-01-01' AND \"CreationDate\" < '2010-05-11';   ": [
+                    "0.1214"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"UpVotes\" > 50 AND \"Users\".\"UpVotes\" < 60;": [
+                    "0.1705"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Age\" > 40 AND \"Users\".\"Age\" < 50": [
+                    "0.1800"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\" FROM \"Users\" WHERE \"Users\".\"Views\" > 100 AND \"Users\".\"Views\" < 500": [
+                    "0.1312"
+                ]
+            },
+            {
+                "SELECT \"Comments\".\"Id\", \"Views\" FROM \"Comments\" JOIN \"Users\" ON \"Comments\".\"UserId\" = \"Users\".\"Id\" ORDER BY \"Views\" DESC;": [
+                    "0.2916",
+                    "0.1753",
+                    "0.1563"
+                ]
+            },
+            {
+                "SELECT \"P\".\"Id\", \"V\".\"VoteTypeId\" FROM \"Posts\" as \"P\" JOIN \"Votes\" as \"V\" ON \"P\".\"Id\" = \"V\".\"PostId\" WHERE \"V\".\"VoteTypeId\" = 3;": [
+                    "0.892",
+                    "0.1451",
+                    "0.1999"
+                ]
+            },
+            {
+                "SELECT \"Users\".\"Id\", \"Users\".\"DisplayName\", \"UserBadges1\".\"Name\", \"UserBadges2\".\"Name\" FROM (( \"Users\" JOIN \"Badges\" AS \"UserBadges1\" ON \"Users\".\"Id\" = \"UserBadges1\".\"UserId\") JOIN \"Badges\" AS \"UserBadges2\" ON (\"UserBadges1\".\"UserId\" = \"UserBadges2\".\"UserId\" AND \"UserBadges1\".\"Name\" != \"UserBadges2\".\"Name\")) WHERE \"UserBadges1\".\"Name\" = 'Editor' AND \"UserBadges2\".\"Name\" = 'Supporter';": [
+                    "0.1536",
+                    "0.1774",
+                    "0.2026"
+                ]
+            }
+        ],
+        "NoIndex": []
+    }
+}

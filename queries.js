@@ -47,12 +47,25 @@ export class Queries {
         }
         else if (db === "mysql") {
             sql = sql.replace(/"/g, "");
-            console.log("res: ", res)
+            res = await this.myPool.query(sql);
+            // console.log("res: ", res);
         }
         //if index in sql console.log
         if (sql.includes("CREATE INDEX") || sql.includes("DROP INDEX")) console.log("res: ", res);
         console.log("res lentgh: ", res?.length)
         return res;
+    }
+
+    async resetCache(db) {
+        if (db === "pg") {
+            res = await this.pgPool.query("RESET QUERY CACHE;");
+            res = res.rows;
+        }
+        else if (db === "mysql") {
+            sql = sql.replace(/"/g, "");
+            res = await this.myPool.query("RESET QUERY CACHE;");
+            // console.log("res: ", res);
+        }
     }
 
     async createIndex(indexType = "BTREE", allIndex, db) {
@@ -67,10 +80,10 @@ export class Queries {
                 index_table_name = index_table_name.replace(/"/g, "");
                 index_column_name = index_column_name.replace(/"/g, "");
                 if (indexType == "BTREE") {
-                    // this.runQuery("SET @innodb_adaptive_hash_index = 0", db)
+                    this.runQuery("SET GLOBAL innodb_adaptive_hash_index = OFF;", db)
                 }
                 else if (indexType == "HASH") {
-                    // this.runQuery("SET @innodb_adaptive_hash_index = 1", db)
+                    this.runQuery("SET GLOBAL innodb_adaptive_hash_index = ON;", db)
                 }
             }
             else if (db = "pg") {
@@ -143,6 +156,7 @@ export class Queries {
         let dropQueries;
 
         if (indexType) dropQueries = await this.createIndex(indexType, indexList, db);
+        else this.runQuery("SET GLOBAL innodb_adaptive_hash_index = OFF;", db);
 
         for (let i = 0; i < tests; i++) {
             for (let qry of qryList) {

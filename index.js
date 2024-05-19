@@ -20,7 +20,7 @@ async function runTestBattery(db, queryList, indexList, dbName = "mysql", outFil
         console.error('Nao consegui apagar o arquivo: ' + "results/" + outFileName)
     }
 
-    let results = await db.testManyWithIndex(10, queryList, indexList, dbName, indexType);
+    let results = await db.testManyWithIndex(1, queryList, indexList, dbName, indexType);
 
     fs.appendFileSync("results/" + outFileName ,JSON.stringify(results, null, 4) + '\n');
 }
@@ -49,13 +49,58 @@ app.get('/', async (req, res) => {
 
     var testResults = []
     let results = []
-
+    
     // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
-    console.log("run mysql queries")
-    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "consultas3NoIndexPG.json", false)
-    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "consultas5NoIndexPG.json", false);
-    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "consultas3BTreePG.json", "BTREE")
-    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "consultas5BTreePG.json", "BTREE")
+
+    console.log('começando')
+
+    //MYSQL
+    await db.testManyWithIndex(1, c.createFullTextIndexMysql, false, "mysql", false)
+
+    await runTestBattery(db, c.consultasItem2, false, "mysql", "con2NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem4, false, "mysql", "con4NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "mysql", "con7NoIndex_My.json", false)
+
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3Hash_My.json", "HASH")
+    await runTestBattery(db, c.consultasItem4IndicesMysql, false, "mysql", "con4NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Hash_My.json", "HASH")
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6Hash_My.json", "HASH")
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "mysql", "con7Hash_My.json", "HASH")
+
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3Hash_My.json", "BTREE")
+    await runTestBattery(db, c.consultasItem4, false, "mysql", "con4Hash_My.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Hash_My.json", "BTREE")
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6Hash_My.json", "BTREE")
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "mysql", "con7Hash_My.json", "BTREE")
+
+    await db.testManyWithIndex(1, c.dropFullTextIndexMysql, false, "mysql", false)
+
+    await db.testManyWithIndex(1, c.createFullTextIndexPostgres, false, "pg", false)
+
+    //POSTGRES
+    await runTestBattery(db, c.consultasItem2, false, "pg", "con2NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem4, false, "pg", "con4NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "pg", "con7NoIndex_Pg.json", false)
+
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3Hash_Pg.json", "HASH")
+    await runTestBattery(db, c.consultasItem4IndicesPostgres, false, "pg", "con4NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5Hash_Pg.json", "HASH")
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6Hash_Pg.json", "HASH")
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "pg", "con7Hash_Pg.json", "HASH")
+
+    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3Hash_Pg.json", "BTREE")
+    await runTestBattery(db, c.consultasItem4, false, "pg", "con4Hash_Pg.json", false)
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5Hash_Pg.json", "BTREE")
+    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6Hash_Pg.json", "BTREE")
+    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "pg", "con7Hash_Pg.json", "BTREE")
+
+    await db.testManyWithIndex(1, c.dropFullTextIndexPostgres, false, "pg", false)
 
     console.log("terminei");
     // try {

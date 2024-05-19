@@ -1,0 +1,26 @@
+{
+    "SELECT * FROM \"Comments\" WHERE \"Id\" = 10;": [
+        "0.6441"
+    ],
+    "SELECT * FROM \"Badges\" WHERE \"Id\" = 83663;": [
+        "0.7411"
+    ],
+    "Select * FROM \"Users\" WHERE \"Id\" = 7670379;": [
+        "0.5093"
+    ],
+    "Select * FROM \"Votes\" WHERE \"Id\" = 5503;": [
+        "0.4293"
+    ],
+    "SELECT * FROM \"Posts\" WHERE \"Id\" > 30 AND \"Id\" < 1000;": [
+        "0.4434"
+    ],
+    "SELECT * FROM \"Comments\" WHERE Id > 10 AND \"Id\" < 50;": [
+        "0.2796"
+    ],
+    "SELECT * FROM \"Badges\" WHERE \"Id\" > 83663 AND \"Id\" < 725012;": [
+        "0.10016"
+    ],
+    "SELECT * FROM \"Users\" WHERE \"Id\" > 4 AND \"Id\" < 7670379;": [
+        "0.1322"
+    ]
+}
