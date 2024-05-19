@@ -1,0 +1,20 @@
+{
+    "SELECT * \n    FROM \"Posts\" \n    WHERE \"Id\" IN (\n      SELECT \"PostId\" \n      FROM \"Votes\" \n      WHERE \"UserId\" IN (\n        SELECT \"Id\" \n        FROM \"Users\" \n        WHERE \"DownVotes\" = (SELECT MAX(\"DownVotes\") FROM \"Users\")\n      )\n      AND \"VoteTypeId\" = 2\n    );": [
+        "0.3296"
+    ],
+    "SELECT *\n    FROM \"Posts\" \n    WHERE \"OwnerUserId\" IN (\n        SELECT \"UserId\"\n        FROM (\n            SELECT \"Users\".\"Id\" as \"UserId\", COUNT(\"Badges\".\"Id\") AS \"badgeCount\" \n            FROM \"Users\" \n            JOIN \"Badges\" ON \"Users\".\"Id\" = \"Badges\".\"UserId\"\n            GROUP BY \"Users\".\"Id\"\n        ) AS \"UserBadges\"\n        WHERE \"badgeCount\" = (\n            SELECT MAX(\"badgeCount\")\n            FROM (\n                SELECT COUNT(\"Badges\".\"Id\") AS \"badgeCount\" \n                FROM \"Users\" \n                JOIN \"Badges\" ON \"Users\".\"Id\" = \"Badges\".\"UserId\"\n                GROUP BY \"Users\".\"Id\"\n            ) AS \"MaxBadgeCounts\"\n        )\n    );": [
+        "0.2460"
+    ],
+    "SELECT \"Id\", \"Reputation\", \"UpVotes\"\n    FROM \"Users\"\n    ORDER BY \"Reputation\" DESC, \"UpVotes\" ASC;": [
+        "0.1738"
+    ],
+    "SELECT \"U\".\"Id\"\n    FROM (\n      SELECT \"Id\", \"UpVotes\"\n      FROM \"Users\"\n      WHERE \"Reputation\" = (SELECT MAX(\"Reputation\") FROM \"Users\")\n    ) AS \"U\"\n    WHERE \"U\".\"UpVotes\" = (SELECT MIN(\"UpVotes\") FROM \"Users\" WHERE \"Reputation\" = (SELECT MAX(\"Reputation\") FROM \"Users\"));": [
+        "0.2065"
+    ],
+    "SELECT \"U\".\"Id\", \"U\".\"DisplayName\", \"U\".\"CreationDate\", \"U\".\"DownVotes\"\n    FROM (\n      SELECT \"Id\", \"DisplayName\", \"DownVotes\", \"CreationDate\"\n      FROM \"Users\" \n      WHERE \"CreationDate\" > '2010-01-01' AND \"CreationDate\" < '2010-07-01'\n    ) AS \"U\"\n    WHERE \"DownVotes\" > 100\n    ORDER BY \"DownVotes\" DESC;": [
+        "0.2027"
+    ],
+    "SELECT \"U\".\"Id\"\n    FROM (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"Views\" > 1000\n    ) AS \"U\"\n    WHERE \"DownVotes\" > 10000;": [
+        "0.1825"
+    ]
+}

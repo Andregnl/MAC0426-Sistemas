@@ -19,25 +19,59 @@ def convert_list_float(list):
     return row
 
 def make_boxplot(source, chart_path):
+
+    boxwidth = 0.25
+
+    print(source)
+
     json_data = open_json(source)
     data = []
-    for key in json_data:
-        row = convert_list_float(json_data[key])
-        data.append(row)
+    labels = []
+    with open("output.txt","w") as file:
+        for key in json_data:
+            row = convert_list_float(json_data[key])
+            data.append(row)
+            labels.append(key)
+            for element2 in row:
+                file.write(str(element2))
+                file.write("\n")
+            file.write("new")
+    file.close()
 
-    plt.boxplot(data)
+    plt.boxplot(data,widths=boxwidth)
+
+    plt.xlabel('Testes', fontweight ='bold', fontsize = 15) 
+    plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15) 
+
     plt.savefig(chart_path)
     plt.clf()
 
 def make_barplot(source, chart_path):
-    json_data = open_json(source)
-    data = []
-    for key in json_data:
-        row = convert_list_float(json_data[key])
-        data.append(row)
+    # json_data = open_json(source)
+    # data = []
+    # for key in json_data:
+    #     row = convert_list_float(json_data[key])
+    #     data.append(row)
 
-    plt.plot(json_data)
+    data1 = [1,2,3,4,5]
+    data2 = [2,3,4,5,6]
+
+    barwidth = 0.25
+
+    br1 = np.arange(len(data1)) 
+    br2 = [x + barwidth for x in br1] 
+
+    plt.bar(br1,list(data1), color = "blue", width = barwidth)
+    plt.bar(br2,list(data2),color = "red", width = barwidth)
+
+    plt.xlabel('Testes', fontweight ='bold', fontsize = 15) 
+    plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15) 
+    plt.xticks([r + barwidth for r in range(len(data1))], 
+            ['conj1', 'conj2', 'conj3', 'conj4', 'conj5'])
+    
+    plt.legend(("pg","my"))
     plt.savefig(chart_path)
+    plt.clf()
     
 
 def get_consultas(json):
@@ -90,8 +124,8 @@ def json_table_path(source):
     path = path.replace("results","table")
     return path
 
-def get_json_files():
-    roo = os.getcwd() + "/results"
+def get_json_files(path):
+    roo = os.getcwd() + path
     print(roo)
     files = []
     for arquivo in os.listdir(roo ):
@@ -100,26 +134,24 @@ def get_json_files():
     return files
 
 def main():
-    files = get_json_files()
-    # file = 'results/con3BTree_My.json'
-    # file = 'results/result_proces_sample.txt'
+    path = "/results2"
+    files = get_json_files(path)
+    
     for i,file in enumerate(files):
-        # if i == 2:
-        print(file)
         chart_path = json_chart_path(file)
-        table_path = json_table_path(file)
-        # make_barplot(file,'chart/chart2.png')
         make_boxplot(file,chart_path)
-        make_table(file,file,table_path)
-        # if i == 2:
-        #     exit(0)
+
+    # for i, file in enumerate(files):
+    #     table_path = json_table_path(file)
+    #     make_table(file,file,table_path)
+
+    # path = "/organizedResults"
+    # files = get_json_files(path)
+    # for i,file in enumerate(files):
+    #     chart_path= json_chart_path(file)
+    #     make_barplot(file,chart_path)
 
 
 
 if __name__ =='__main__':
     main()
-
-
-
-
-# Objeto{}

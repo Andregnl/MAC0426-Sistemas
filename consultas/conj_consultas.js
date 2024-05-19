@@ -30,7 +30,7 @@ export const consultasItem2 = [
     `Select * FROM "Users" WHERE "Id" = 7670379;`,
     `Select * FROM "Votes" WHERE "Id" = 5503;`,
     `SELECT * FROM "Posts" WHERE "Id" > 30 AND "Id" < 1000;`,
-    `SELECT * FROM "Comments" WHERE Id > 10 AND "Id" < 50;`,
+    `SELECT * FROM "Comments" WHERE "Id" > 10 AND "Id" < 50;`,
     `SELECT * FROM "Badges" WHERE "Id" > 83663 AND "Id" < 725012;`,
     `SELECT * FROM "Users" WHERE "Id" > 4 AND "Id" < 7670379;`,
 ]
@@ -147,27 +147,7 @@ export const consultasItem6 = [
             ) AS "MaxBadgeCounts"
         )
     );`,
-    
-    `SELECT "Id"
-    FROM "Users" 
-    WHERE "Id" IN (
-      SELECT "pc"."UserId"
-      FROM (
-        SELECT "post_comment"."UserId", "post_comment"."PostId"
-        FROM "Comments" AS "post_comment", "Posts" AS "post"
-        WHERE "post_comment"."PostId" = "post"."Id"
-      ) AS "pc"
-      WHERE "pc"."UserId" IN (
-        SELECT "rpc"."UserId"
-        FROM (
-          SELECT "related_post_comment"."UserId", "pl"."RelatedPostId"
-          FROM "Comments" AS "related_post_comment", "PostLinks" AS "pl"
-          WHERE "related_post_comment"."Id" = "pl"."RelatedPostId"
-        ) AS "rpc"
-        WHERE "pc"."PostId" = "rpc"."RelatedPostId"
-      )
-    );`,
-    
+     
     `SELECT "Id", "Reputation", "UpVotes"
     FROM "Users"
     ORDER BY "Reputation" DESC, "UpVotes" ASC;`,
@@ -209,7 +189,6 @@ export const indexesItem6 = [
     { column_name: `"PostsId"`, table_name: `"PostLinks"` },
     { column_name: `"PostId"`, table_name: `"Comments"` },
     { column_name: `"RelatedPostId"`, table_name: `"PostLinks"` },
-    { column_name: `"UserId"`, table_name: `"Badges"` },
     { column_name: `"Reputation"`, table_name: `"Users"` },
     { column_name: `"CreationDate"`, table_name: `"Users"` },
     { column_name: `"Views"`, table_name: `"Users"` },
@@ -255,7 +234,6 @@ export const consultasItem7 = [
       FROM "Users"
       WHERE "Views" = (SELECT MAX("Views") FROM "Users")
     ) AS "U");`,
-
 `SELECT "Id"
     FROM "Users"
     WHERE "DownVotes" > (SELECT AVG("DownVotes") FROM "Users");`
@@ -271,15 +249,15 @@ export const indexesItem7 = [
 ]
 
 export const createFullTextIndexPostgres = [
-    `CREATE INDEX "posttypes_type_tsvector_idx" 
+    `CREATE INDEX IF NOT EXISTS "posttypes_type_tsvector_idx" 
     ON "PostTypes" 
     USING gin(to_tsvector('english', "Type"));`,
 
-    `CREATE INDEX "users_displayname_tsvector_idx" 
+    `CREATE INDEX IF NOT EXISTS "users_displayname_tsvector4_idx" 
     ON "Users" 
     USING gin(to_tsvector('english', "DisplayName"));`,
 
-    `CREATE INDEX "badges_name_tsvector_idx" 
+    `CREATE INDEX IF NOT EXISTS "badges_name_tsvector_idx" 
     ON "Badges" 
     USING gin(to_tsvector('english', "Name"));`
 ]
@@ -297,7 +275,7 @@ export const createFullTextIndexMysql = [
 
 export const dropFullTextIndexPostgres = [
     `DROP INDEX IF EXISTS "posttypes_type_tsvector_idx";`,
-    `DROP INDEX IF EXISTS "users_displayname_tsvector_idx";`,
+    `DROP INDEX IF EXISTS "users_displayname_tsvector4_idx";`,
     `DROP INDEX IF EXISTS "badges_name_tsvector_idx";`
 ];
 

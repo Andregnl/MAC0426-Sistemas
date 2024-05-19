@@ -1,0 +1,17 @@
+{
+    "SELECT \"Users\".\"Id\", COUNT(\"Badges\".\"Id\") AS \"badgeCount\"\n    FROM \"Users\"\n    INNER JOIN \"Badges\" ON \"Users\".\"Id\" = \"Badges\".\"UserId\"\n    WHERE \"Users\".\"DownVotes\" > 100\n    GROUP BY \"Users\".\"Id\"\n    ORDER BY \"badgeCount\" DESC;": [
+        "0.2877"
+    ],
+    "WITH \"MinCreationDateUsers\" AS (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"CreationDate\" = (SELECT MIN(\"CreationDate\") FROM \"Users\")\n    )\n    SELECT \"U\".\"Id\"\n    FROM \"MinCreationDateUsers\" AS \"U\"\n    WHERE \"U\".\"DownVotes\" = (SELECT MAX(\"DownVotes\") FROM \"MinCreationDateUsers\");": [
+        "0.2202"
+    ],
+    "SELECT \"U\".\"Id\"\n    FROM (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"CreationDate\" = (SELECT MIN(\"CreationDate\") FROM \"Users\")\n    ) AS \"U\"\n    WHERE \"U\".\"DownVotes\" = (SELECT MAX(\"DownVotes\") FROM (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"CreationDate\" = (SELECT MIN(\"CreationDate\") FROM \"Users\")\n    ) AS \"U\");": [
+        "0.5813"
+    ],
+    "SELECT \"U\".\"Id\"\n    FROM (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"Views\" = (SELECT MAX(\"Views\") FROM \"Users\")\n    ) AS \"U\"\n    WHERE \"U\".\"DownVotes\" = (SELECT MAX(\"DownVotes\") FROM (\n      SELECT \"Id\", \"DownVotes\"\n      FROM \"Users\"\n      WHERE \"Views\" = (SELECT MAX(\"Views\") FROM \"Users\")\n    ) AS \"U\");": [
+        "0.2315"
+    ],
+    "SELECT \"Id\"\n    FROM \"Users\"\n    WHERE \"DownVotes\" > (SELECT AVG(\"DownVotes\") FROM \"Users\");": [
+        "0.2410"
+    ]
+}

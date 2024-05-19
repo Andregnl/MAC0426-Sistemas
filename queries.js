@@ -39,20 +39,26 @@ export class Queries {
     }
 
     async runQuery(sql, db) {
+
         console.log("Consulta: ", sql, " |base: ", db);
         let res;
-        if (db === "pg") {
-            res = await this.pgPool.query(sql);
-            res = res.rows;
+        try {
+            if (db === "pg") {
+                res = await this.pgPool.query(sql);
+                res = res.rows;
+            }
+            else if (db === "mysql") {
+                sql = sql.replace(/"/g, "");
+                res = await this.myPool.query(sql);
+                // console.log("res: ", res);
+            }
+            //if index in sql console.log
+            if (sql.includes("CREATE INDEX") || sql.includes("DROP INDEX")) console.log("res: ", res);
+            console.log("res lentgh: ", res?.length)
         }
-        else if (db === "mysql") {
-            sql = sql.replace(/"/g, "");
-            res = await this.myPool.query(sql);
-            // console.log("res: ", res);
+        catch (err) {
+            console.log("erro: ", err);
         }
-        //if index in sql console.log
-        if (sql.includes("CREATE INDEX") || sql.includes("DROP INDEX")) console.log("res: ", res);
-        console.log("res lentgh: ", res?.length)
         return res;
     }
 
@@ -90,7 +96,9 @@ export class Queries {
                 indexTypeQry = " USING " + indexType;
             }
             index_name = index_name.replace(/"/g, "");
-            let index_qry = `CREATE INDEX ${index_name} ON ${index_table_name}  ${indexTypeQry}  (${index_column_name})`;
+            let index_qry
+            if (db == 'pg') index_qry = `CREATE INDEX IF IT NOT EXISTS ${index_name} ON ${index_table_name}  ${indexTypeQry}  (${index_column_name})`;
+            if (db == 'mysql') index_qry = `CREATE INDEX ${index_name} ON ${index_table_name}  ${indexTypeQry}  (${index_column_name})`;
             let dropIndex = `DROP INDEX ${index_name}`;
             if (db == "mysql") dropIndex = `DROP INDEX ${index_name} ON ${index_table_name}`;
             queryDropIndex.push(dropIndex);
@@ -156,13 +164,13 @@ export class Queries {
         let dropQueries;
 
         if (indexType) dropQueries = await this.createIndex(indexType, indexList, db);
-        else this.runQuery("SET GLOBAL innodb_adaptive_hash_index = OFF;", db);
+        else if (db == 'mysql') await this.runQuery("SET GLOBAL innodb_adaptive_hash_index = OFF;", db);
 
         for (let i = 0; i < tests; i++) {
             for (let qry of qryList) {
                 const iniTime = process.hrtime();
-                let diff = process.hrtime(iniTime);
                 await this.runQuery(qry, db);
+                let diff = process.hrtime(iniTime);
                 diff = diff.toString().replace(/,/g, ".");
                 tempoDiff.push(diff);
                 console.log(`Teste ${i} demorou: ${diff} ms`);
