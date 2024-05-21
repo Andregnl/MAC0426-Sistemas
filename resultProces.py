@@ -150,6 +150,7 @@ def make_table(source_mysql, source_postgres,table_path):
 
 
 def create_csv(fields,rows,table_path):
+    
     with open(table_path, 'w') as f:
         csv_writer = csv.writer(f, delimiter = ';')
         csv_writer.writerow(fields)
@@ -173,7 +174,7 @@ def json_chart_path(source):
 
 def json_table_path(source):
     path = source.replace("json","csv")
-    path = path.replace("results","table")
+    path = path.replace("results2","table3")
     return path
 
 def get_json_files(path):
@@ -194,9 +195,26 @@ def main():
 
     path = "/results2"
     files = get_json_files(path)
+    filesNoRepeat = []
+    for i, file in enumerate(files):
+        newNameFile = file.replace("My.json","")
+        newNameFile = newNameFile.replace("Pg.json","")
+        filesNoRepeat.append(newNameFile)
+        
+    files = list(set(filesNoRepeat))
     for i, file in enumerate(files):
         table_path = json_table_path(file)
-        make_table(file,file,table_path)
+        print(table_path)
+        mySql = file + "My.json"
+        pg = file + "Pg.json"
+        pathCsv = table_path.replace("_","") + ".csv"
+        print(mySql, pg, pathCsv)
+        try:
+            make_table(mySql, pg, pathCsv)
+        except Exception as e:
+            print(e)
+  
+            
 
     # file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
     # chart_path= json_chart_path(file)

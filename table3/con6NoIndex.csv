@@ -1,0 +1,58 @@
+consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
+"SELECT * 
+    FROM ""Posts"" 
+    WHERE ""Id"" IN (
+      SELECT ""PostId"" 
+      FROM ""Votes"" 
+      WHERE ""UserId"" IN (
+        SELECT ""Id"" 
+        FROM ""Users"" 
+        WHERE ""DownVotes"" = (SELECT MAX(""DownVotes"") FROM ""Users"")
+      )
+      AND ""VoteTypeId"" = 2
+    );";21,25998921925;18,92945701321497;0,3539613219;0,06443652942077102
+"SELECT *
+    FROM ""Posts"" 
+    WHERE ""OwnerUserId"" IN (
+        SELECT ""UserId""
+        FROM (
+            SELECT ""Users"".""Id"" as ""UserId"", COUNT(""Badges"".""Id"") AS ""badgeCount"" 
+            FROM ""Users"" 
+            JOIN ""Badges"" ON ""Users"".""Id"" = ""Badges"".""UserId""
+            GROUP BY ""Users"".""Id""
+        ) AS ""UserBadges""
+        WHERE ""badgeCount"" = (
+            SELECT MAX(""badgeCount"")
+            FROM (
+                SELECT COUNT(""Badges"".""Id"") AS ""badgeCount"" 
+                FROM ""Users"" 
+                JOIN ""Badges"" ON ""Users"".""Id"" = ""Badges"".""UserId""
+                GROUP BY ""Users"".""Id""
+            ) AS ""MaxBadgeCounts""
+        )
+    );";10,43207826135;8,739776036871074;3,18723856165;0,19200212736782377
+"SELECT ""Id"", ""Reputation"", ""UpVotes""
+    FROM ""Users""
+    ORDER BY ""Reputation"" DESC, ""UpVotes"" ASC;";5,16315312165;18,005749204917038;0,78236385365;0,35811767190050087
+"SELECT ""U"".""Id""
+    FROM (
+      SELECT ""Id"", ""UpVotes""
+      FROM ""Users""
+      WHERE ""Reputation"" = (SELECT MAX(""Reputation"") FROM ""Users"")
+    ) AS ""U""
+    WHERE ""U"".""UpVotes"" = (SELECT MIN(""UpVotes"") FROM ""Users"" WHERE ""Reputation"" = (SELECT MAX(""Reputation"") FROM ""Users""));";2,68511929695;8,591483641029546;0,1487741103;0,05904843558208274
+"SELECT ""U"".""Id"", ""U"".""DisplayName"", ""U"".""CreationDate"", ""U"".""DownVotes""
+    FROM (
+      SELECT ""Id"", ""DisplayName"", ""DownVotes"", ""CreationDate""
+      FROM ""Users"" 
+      WHERE ""CreationDate"" > '2010-01-01' AND ""CreationDate"" < '2010-07-01'
+    ) AS ""U""
+    WHERE ""DownVotes"" > 100
+    ORDER BY ""DownVotes"" DESC;";1,21386946925;3,626083397739077;0,29553324145;0,06911706851323354
+"SELECT ""U"".""Id""
+    FROM (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""Views"" > 1000
+    ) AS ""U""
+    WHERE ""DownVotes"" > 10000;";9,140403665300001;3,1756534523456725;0,30269587045;0,0652076703887165
