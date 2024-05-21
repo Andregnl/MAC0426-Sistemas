@@ -18,6 +18,26 @@ def convert_list_float(list):
         row.append(float(element))
     return row
 
+def make_boxplot2(searchByOpJsonObj):
+    i = 0
+    for qry, values in searchByOpJsonObj.items():
+        pgData = values['Pg']
+        mySqlData = values['MySql']
+
+        fig, ax = plt.subplots()
+        val = pgData.values()
+        val = [convert_list_float(x) for x in val]
+        for timeArr in val:
+            if (timeArr == []):
+                timeArr.append(0)
+
+        ax.boxplot(val)
+        ax.set_xticklabels(pgData.keys())
+        ax.set_title(qry)
+        plt.close(fig)
+        fig.savefig('./compareSameOpInDiffCenarios/' + str(i) + '.png')
+        i = i + 1
+
 def make_boxplot(source, chart_path):
 
     boxwidth = 0.25
@@ -40,8 +60,8 @@ def make_boxplot(source, chart_path):
 
     plt.boxplot(data,widths=boxwidth)
 
-    plt.xlabel('Testes', fontweight ='bold', fontsize = 15) 
-    plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15) 
+    plt.xlabel('Testes', fontweight ='bold', fontsize = 15)
+    plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15)
 
     plt.savefig(chart_path)
     plt.clf()
@@ -98,7 +118,7 @@ def make_barplot(source, chart_path):
     plt.legend(("my","pg"))
     plt.savefig(chart_path)
     plt.clf()
-    
+
 
 def get_consultas(json):
     consultas = []
@@ -110,7 +130,7 @@ def get_consultas(json):
 def make_table(source_mysql, source_postgres,table_path):
     json_mysql = open_json(source_mysql)
     json_postgres = open_json(source_postgres)
-    
+
     mean_my, desvio_my = mean_desvio_p(json_mysql)
     mean_post, desvio_post = mean_desvio_p(json_postgres)
     
@@ -122,12 +142,12 @@ def make_table(source_mysql, source_postgres,table_path):
 
     names = get_consultas(json_mysql)
     fields = ['consultas','mean mysql', 'desvio padrão mysql', 'mean postgres', 'desvio padrão postgres']
-    
+
     rows = [names, mean_my, desvio_my, mean_post, desvio_post]
     rows = np.matrix(rows).transpose().tolist()
 
     create_csv(fields,rows,table_path)
-    
+
 
 def create_csv(fields,rows,table_path):
     with open(table_path, 'w') as f:
@@ -182,7 +202,10 @@ def main():
     # chart_path= json_chart_path(file)
     # make_barplot(file,chart_path)
 
-
+def main2():
+    f = open('./organizedResults/operationSearch.json')
+    jsonObj = json.load(f)
+    make_boxplot2(jsonObj)
 
 if __name__ =='__main__':
     main()
