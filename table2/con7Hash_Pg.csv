@@ -1,0 +1,40 @@
+consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
+"SELECT ""Users"".""Id"", COUNT(""Badges"".""Id"") AS ""badgeCount""
+    FROM ""Users""
+    INNER JOIN ""Badges"" ON ""Users"".""Id"" = ""Badges"".""UserId""
+    WHERE ""Users"".""DownVotes"" > 100
+    GROUP BY ""Users"".""Id""
+    ORDER BY ""badgeCount"" DESC;";0,7148645809499999;0,14726678755579728;0,7148645809499999;0,14726678755579728
+"WITH ""MinCreationDateUsers"" AS (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""CreationDate"" = (SELECT MIN(""CreationDate"") FROM ""Users"")
+    )
+    SELECT ""U"".""Id""
+    FROM ""MinCreationDateUsers"" AS ""U""
+    WHERE ""U"".""DownVotes"" = (SELECT MAX(""DownVotes"") FROM ""MinCreationDateUsers"");";0,3161734465;0,035208208212609546;0,3161734465;0,035208208212609546
+"SELECT ""U"".""Id""
+    FROM (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""CreationDate"" = (SELECT MIN(""CreationDate"") FROM ""Users"")
+    ) AS ""U""
+    WHERE ""U"".""DownVotes"" = (SELECT MAX(""DownVotes"") FROM (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""CreationDate"" = (SELECT MIN(""CreationDate"") FROM ""Users"")
+    ) AS ""U"");";0,6100243025;0,03968990957739495;0,6100243025;0,03968990957739495
+"SELECT ""U"".""Id""
+    FROM (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""Views"" = (SELECT MAX(""Views"") FROM ""Users"")
+    ) AS ""U""
+    WHERE ""U"".""DownVotes"" = (SELECT MAX(""DownVotes"") FROM (
+      SELECT ""Id"", ""DownVotes""
+      FROM ""Users""
+      WHERE ""Views"" = (SELECT MAX(""Views"") FROM ""Users"")
+    ) AS ""U"");";0,7215959405;0,05094335163305264;0,7215959405;0,05094335163305264
+"SELECT ""Id""
+    FROM ""Users""
+    WHERE ""DownVotes"" > (SELECT AVG(""DownVotes"") FROM ""Users"");";0,8517740655;0,03940403646343388;0,8517740655;0,03940403646343388

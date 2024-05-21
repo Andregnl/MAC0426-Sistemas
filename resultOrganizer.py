@@ -6,8 +6,8 @@ resultFilePath = './results2'
 fileList = [f for f in listdir(resultFilePath) if isfile(join(resultFilePath, f))]
 
 newResultByOperation = {}
-newResultByEnviroment = { 'Pg': {'BTree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}, 
-                          'MySql': {'BTree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}}
+newResultByEnviroment = { 'Pg': {'Btree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}, 
+                          'MySql': {'Btree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}}
 
 def main():
     organizeByEnviroment(fileList)
@@ -29,8 +29,8 @@ def organizeByOperation(fileList):
     
     for data in allJsonFiles:
         for operation in data:
-                newResultByOperation[operation] = {'Pg': { 'BTree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}, 
-                                                   'MySql': { 'BTree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}}
+                newResultByOperation[operation] = {'Pg': { 'Btree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}, 
+                                                   'MySql': { 'Btree': [], 'Hash': [], 'NoIndex': [], 'FullTextIndex': []}}
     
     for f in fileList:
         if ('my' in f.lower()):
@@ -49,15 +49,15 @@ def organizeByEnviroment(fileList):
     
     writeJson(newResultByEnviroment, './organizedResults/enviromentSearch.json')
 
-#Separa entre BTREE, HASH e NOINDEX
+#Separa entre BtREE, HASH e NOINDEX
 def sortFileByEnviroment(fileName, db):
     file = open(join(resultFilePath, fileName))
     data = json.load(file)
     file.close()
 
-    if ('BTree' in fileName):
+    if ('Btree' in fileName):
         for operation, times in data.items():
-            newResultByEnviroment[db]['BTree'].append({ operation: times })
+            newResultByEnviroment[db]['Btree'].append({ operation: times })
         
     elif ('Hash' in fileName):
         for operation, times in data.items():
@@ -76,9 +76,9 @@ def sortFileByOperation(fileName, db):
     data = json.load(file)
     file.close()
 
-    if ('BTree' in fileName):
+    if ('Btree' in fileName):
         for operation, times in data.items():
-            newResultByOperation[operation][db]['BTree'] = times
+            newResultByOperation[operation][db]['Btree'] = times
         
     elif ('Hash' in fileName):
         for operation, times in data.items():
@@ -95,4 +95,4 @@ def sortFileByOperation(fileName, db):
 main()
 #for consulta in obj['selec...']['PG']
         
-#for cenário in obj['BTree']
+#for cenário in obj['Btree']

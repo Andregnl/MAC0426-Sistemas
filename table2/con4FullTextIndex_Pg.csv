@@ -1,0 +1,14 @@
+consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
+"SELECT ""Posts"".""Id"", ""PostTypes"".""Type""
+    FROM ""Posts""
+    JOIN ""PostTypes"" ON ""Posts"".""PostTypeId"" = ""PostTypes"".""Id""
+    WHERE to_tsvector('english', ""PostTypes"".""Type"") @@ to_tsquery('english', 'Question');";1,41869554165;0,04886162022094975;1,41869554165;0,04886162022094975
+"SELECT ""Id"", ""DisplayName""
+    FROM ""Users""
+    WHERE to_tsvector('english', ""DisplayName"") @@ to_tsquery('english', 'Jon');";0,199286825;0,16329812144698605;0,199286825;0,16329812144698605
+"SELECT *
+    FROM ""Badges""
+    WHERE to_tsvector('english', ""Name"") @@ to_tsquery('english', 'Legendary');";0,58723386;0,15547722134651784;0,58723386;0,15547722134651784
+"SELECT *
+    FROM ""Badges""
+    WHERE to_tsvector('english', ""Name"") @@ to_tsquery('english', 'Supporter');";0,33536173385;0,021332016361765984;0,33536173385;0,021332016361765984

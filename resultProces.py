@@ -47,29 +47,55 @@ def make_boxplot(source, chart_path):
     plt.clf()
 
 def make_barplot(source, chart_path):
-    # json_data = open_json(source)
-    # data = []
-    # for key in json_data:
-    #     row = convert_list_float(json_data[key])
-    #     data.append(row)
+    json_data = open_json(source)
+    print(json_data["Pg"].keys())
 
-    data1 = [1,2,3,4,5]
-    data2 = [2,3,4,5,6]
+    pgData = []
+    mySqlData = []
+    pgMean = []
+    mySqlMean = []
+    for bd in json_data.keys():
+        for index in json_data[bd].keys():
+            for consultas in json_data[bd][index]:
+                for query, timeArray in consultas.items():
+                    timeArray = convert_list_float(timeArray)
+                    m = mean(timeArray)
+                    if (bd == 'Pg'):
+                        pgMean.append(m)
+                    elif (bd == 'MySql'):
+                        mySqlMean.append(m)
+            if (bd == 'Pg'):
+                if len(pgMean) <= 0:
+                    pgData.append(0)                    
+                else:
+                    pgData.append(mean(pgMean))
+            elif (bd == 'MySql'):
+                if len(mySqlMean) <= 0:
+                    mySqlData.append(0)
+                else:
+                    mySqlData.append(mean(mySqlMean))
+                    #print(bd + " | " + index + " | " + query + " " + str(m) + " " + str(d))
 
+    print(len(mySqlData), len(pgData))
     barwidth = 0.25
 
-    br1 = np.arange(len(data1)) 
+    # mySqlData = [1,2,3,4]
+    # pgData = [1,2,3,4]
+
+    br1 = np.arange(len(mySqlData)) 
     br2 = [x + barwidth for x in br1] 
 
-    plt.bar(br1,list(data1), color = "blue", width = barwidth)
-    plt.bar(br2,list(data2),color = "red", width = barwidth)
+    plt.bar(br1,list(mySqlData), color = "blue", width = barwidth)
+    plt.bar(br2,list(pgData),color = "red", width = barwidth)
 
     plt.xlabel('Testes', fontweight ='bold', fontsize = 15) 
     plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15) 
-    plt.xticks([r + barwidth for r in range(len(data1))], 
-            ['conj1', 'conj2', 'conj3', 'conj4', 'conj5'])
     
-    plt.legend(("pg","my"))
+    labels = json_data[bd].keys()
+    
+    plt.xticks([r + barwidth for r in range(len(mySqlData))], labels)
+    
+    plt.legend(("my","pg"))
     plt.savefig(chart_path)
     plt.clf()
     
@@ -88,6 +114,12 @@ def make_table(source_mysql, source_postgres,table_path):
     mean_my, desvio_my = mean_desvio_p(json_mysql)
     mean_post, desvio_post = mean_desvio_p(json_postgres)
     
+    mean_my = [str(value).replace('.', ',') for value in mean_my]
+    desvio_my = [str(value).replace('.', ',') for value in desvio_my]
+
+    mean_post= [str(value).replace('.', ',') for value in mean_post]
+    desvio_post= [str(value).replace('.', ',') for value in desvio_post]
+
     names = get_consultas(json_mysql)
     fields = ['consultas','mean mysql', 'desvio padrão mysql', 'mean postgres', 'desvio padrão postgres']
     
@@ -99,7 +131,7 @@ def make_table(source_mysql, source_postgres,table_path):
 
 def create_csv(fields,rows,table_path):
     with open(table_path, 'w') as f:
-        csv_writer = csv.writer(f)
+        csv_writer = csv.writer(f, delimiter = ';')
         csv_writer.writerow(fields)
         csv_writer.writerows(rows)
 
@@ -134,22 +166,21 @@ def get_json_files(path):
     return files
 
 def main():
-    path = "/results2"
-    files = get_json_files(path)
-    
-    for i,file in enumerate(files):
-        chart_path = json_chart_path(file)
-        make_boxplot(file,chart_path)
-
-    # for i, file in enumerate(files):
-    #     table_path = json_table_path(file)
-    #     make_table(file,file,table_path)
-
-    # path = "/organizedResults"
+    # path = "/results2"
     # files = get_json_files(path)
     # for i,file in enumerate(files):
-    #     chart_path= json_chart_path(file)
-    #     make_barplot(file,chart_path)
+    #     chart_path = json_chart_path(file)
+    #     make_boxplot(file,chart_path)
+
+    path = "/results2"
+    files = get_json_files(path)
+    for i, file in enumerate(files):
+        table_path = json_table_path(file)
+        make_table(file,file,table_path)
+
+    # file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
+    # chart_path= json_chart_path(file)
+    # make_barplot(file,chart_path)
 
 
 
