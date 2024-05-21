@@ -1,0 +1,5 @@
+consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
+"SELECT ""Posts"".""Id"", ""PostTypes"".""Type"" FROM ""Posts"" JOIN ""PostTypes"" ON ""PostTypeId"" = ""PostTypes"".""Id"" WHERE ""PostTypes"".""Type"" LIKE 'Question';";1,8215046023;1,3573457378200549;2,3822364488;0,4137029006042996
+"SELECT ""Id"", ""DisplayName"" FROM ""Users"" WHERE LOWER(""DisplayName"") LIKE 'jon %' OR LOWER(""DisplayName"") LIKE 'jon' OR LOWER(""DisplayName"") LIKE 'jon-%' OR LOWER(""DisplayName"") LIKE '% jon' OR LOWER(""DisplayName"") LIKE 'jon.%' OR LOWER(""DisplayName"") LIKE '%-jon';";3,11778120075;9,257574992367758;0,35428177135;0,0960288666689258
+"SELECT * FROM ""Badges"" WHERE ""Name"" LIKE 'Legendary';";1,186994205;1,3556493126811604;0,42980792635;0,21287909606793046
+"SELECT * FROM ""Badges"" WHERE ""Name"" LIKE 'Supporter';";1,23436341665;1,1064674974763624;0,583109569;0,19929171022599537
