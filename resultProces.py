@@ -38,7 +38,7 @@ def make_boxplot2(searchByOpJsonObj):
         fig.savefig('./compareSameOpInDiffCenarios/' + str(i) + '.png')
         i = i + 1
 
-def make_boxplot(source, chart_path):
+def make_boxplot(source, chart_path, title):
 
     boxwidth = 0.25
 
@@ -60,8 +60,9 @@ def make_boxplot(source, chart_path):
 
     plt.boxplot(data,widths=boxwidth)
 
-    plt.xlabel('Testes', fontweight ='bold', fontsize = 15)
-    plt.ylabel('Execution Time', fontweight ='bold', fontsize = 15)
+    plt.xlabel('Testes ', fontsize = 15)
+    plt.ylabel('Execution Time (sec)', fontsize = 15)
+    plt.title(title)
 
     plt.savefig(chart_path)
     plt.clf()
@@ -177,35 +178,68 @@ def json_table_path(source):
     return path
 
 def get_json_files(path):
-    roo = os.getcwd() + path
-    print(roo)
     files = []
-    for arquivo in os.listdir(roo ):
+    for arquivo in os.listdir(path):
             if arquivo.endswith(".json"):
-                files.append(os.path.join(roo, arquivo))
+                files.append(os.path.join(path, arquivo))
     return files
 
+def chart_title(file, file_path):
+    name = file.replace(file_path + "/","").replace(".json","")
+    name = name.replace("con"," Item:")
+    name = name.replace("Hash"," Index:Hash").replace("NoIndex"," Index:NoIndex").replace("Btree"," Index:Btree").replace("FullTextIndex"," Index:FullText")
+    name = name.replace("_My"," Bd:MySQL").replace("_Pg"," Bd:Postgres")
+    return name
+
+
 def main():
+    file_path = os.getcwd() + "/results2"
+    files = get_json_files(file_path)
+    for i,file in enumerate(files):
+        chart_path = json_chart_path(file)
+        name = chart_title(file, file_path)
+        make_boxplot(file,chart_path, name)
+
     # path = "/results2"
     # files = get_json_files(path)
-    # for i,file in enumerate(files):
-    #     chart_path = json_chart_path(file)
-    #     make_boxplot(file,chart_path)
-
-    path = "/results2"
-    files = get_json_files(path)
-    for i, file in enumerate(files):
-        table_path = json_table_path(file)
-        make_table(file,file,table_path)
+    # for i, file in enumerate(files):
+    #     table_path = json_table_path(file)
+    #     make_table(file,file,table_path)
 
     # file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
     # chart_path= json_chart_path(file)
     # make_barplot(file,chart_path)
 
+def extractBoxplotFromData(data, qry, index, folderName):
+    fig, ax = plt.subplots()
+    val = data.values()
+    val = [convert_list_float(x) for x in val]
+    for timeArr in val:
+        if (timeArr == []):
+            timeArr.append(0)
+
+    ax.boxplot(val)
+    ax.set_xticklabels(data.keys())
+    ax.set_title(qry)
+    plt.close(fig)
+    fig.savefig('./compareSameOpInDiffCenarios/' + folderName + '/' + str(index) + '.png')
+
+
+def make_boxplot2(searchByOpJsonObj):
+    i = 0
+    for qry, values in searchByOpJsonObj.items():
+        pgData = values['Pg']
+        mySqlData = values['MySql']
+
+        extractBoxplotFromData(pgData, qry, i, 'Pg')
+        extractBoxplotFromData(mySqlData, qry, i, 'MySql')
+
+        i = i + 1
+ 
 def main2():
     f = open('./organizedResults/operationSearch.json')
     jsonObj = json.load(f)
     make_boxplot2(jsonObj)
 
 if __name__ =='__main__':
-    main()
+    main2()
