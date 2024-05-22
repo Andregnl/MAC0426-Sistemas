@@ -1,5 +1,0 @@
-consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
-"SELECT ""Id"", ""CreationDate"" FROM ""Posts"" WHERE ""CreationDate"" >= '2010-01-01' AND ""CreationDate"" < '2010-05-11';   ";1,6237725089;1,8174200447035493;1,6237725089;1,8174200447035493
-"SELECT ""Users"".""Id"" FROM ""Users"" WHERE ""Users"".""UpVotes"" > 50 AND ""Users"".""UpVotes"" < 60;";0,54406287695;0,19127509712171742;0,54406287695;0,19127509712171742
-"SELECT ""Users"".""Id"" FROM ""Users"" WHERE ""Users"".""Age"" > 40 AND ""Users"".""Age"" < 50";1,6173982475;3,5033921334151445;1,6173982475;3,5033921334151445
-"SELECT ""Users"".""Id"" FROM ""Users"" WHERE ""Users"".""Views"" > 100 AND ""Users"".""Views"" < 500";0,7528129323;1,6170975716275033;0,7528129323;1,6170975716275033

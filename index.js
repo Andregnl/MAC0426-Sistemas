@@ -14,7 +14,7 @@ const port = 3080 //port in which the server will run
 
 async function runTestBattery(db, queryList, indexList, dbName = "mysql", outFileName, indexType = '') {
     try {
-        fs.unlinkSync("results2/" + outFileName);
+        fs.unlinkSync("results/" + outFileName);
     }
     catch (err) {
         console.error('Nao consegui apagar o arquivo: ' + "results3/" + outFileName)
@@ -22,7 +22,7 @@ async function runTestBattery(db, queryList, indexList, dbName = "mysql", outFil
 
     let results = await db.testManyWithIndex(20, queryList, indexList, dbName, indexType);
 
-    fs.appendFileSync("results2/" + outFileName ,JSON.stringify(results, null, 4) + '\n');
+    fs.appendFileSync("results/" + outFileName ,JSON.stringify(results, null, 4) + '\n');
 }
 
 async function startApplication() {
@@ -49,14 +49,10 @@ app.get('/', async (req, res) => {
 
     var testResults = []
     let results = []
-    
-    // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
 
     console.log('começando')
 
     //MYSQL
-  /*
-
     await db.testManyWithIndex(1, c.createFullTextIndexMysql, false, "mysql", false)
 
     await runTestBattery(db, c.consultasItem2, false, "mysql", "con2NoIndex_My.json", false)
@@ -79,18 +75,16 @@ app.get('/', async (req, res) => {
     await runTestBattery(db, c.consultasItem4, false, "mysql", "con4FullTextIndex.json", false)
 
     await db.testManyWithIndex(1, c.dropFullTextIndexMysql, false, "mysql", false)
-*/
 
-/*
     //POSTGRES
     await db.testManyWithIndex(1, c.createFullTextIndexPostgres, false, "pg", false)
 
-    //await runTestBattery(db, c.consultasItem2, false, "pg", "con2NoIndex_Pg.json", false)
-    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem2, false, "pg", "con2NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem3, false, "pg", "con3NoIndex_Pg.json", false)
     await runTestBattery(db, c.consultasItem4, false, "pg", "con4NoIndex_Pg.json", false)
-    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5NoIndex_Pg.json", false)
-    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6NoIndex_Pg.json", false)
-    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "pg", "con7NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem5, false, "pg", "con5NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem6, false, "pg", "con6NoIndex_Pg.json", false)
+    await runTestBattery(db, c.consultasItem7, false, "pg", "con7NoIndex_Pg.json", false)
 
     await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3Hash_Pg.json", "HASH")
     await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5Hash_Pg.json", "HASH")
@@ -105,7 +99,7 @@ app.get('/', async (req, res) => {
     await runTestBattery(db, c.consultasItem4IndicesPostgres, false, "pg", "con4FullTextIndex_Pg.json", false)
 
     await db.testManyWithIndex(1, c.dropFullTextIndexPostgres, false, "pg", false)
-*/
+
     console.log("terminei");
     // try {
     //     fs.unlinkSync('tempo_postgres.txt');
