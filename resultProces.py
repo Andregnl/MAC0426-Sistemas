@@ -227,8 +227,6 @@ def main():
             make_table(mySql, pg, pathCsv)
         except Exception as e:
             print(e)
-  
-            
 
     # file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
     # chart_path= json_chart_path(file)
@@ -244,7 +242,7 @@ def extractBoxplotFromData(data, qry, index, folderName):
 
     ax.boxplot(val)
     ax.set_xticklabels(data.keys())
-    ax.set_title()
+    ax.set_title(qry)
     plt.close(fig)
     fig.savefig('./compareSameOpInDiffCenarios/' + folderName + '/' + str(index) + '.png')
 
@@ -293,5 +291,6 @@ def main2():
     make_boxplot2(jsonObj)
 
 if __name__ =='__main__':
-    # make_boxplot_item4()
+    make_boxplot_item4()
     main()
+    main2()

@@ -53,10 +53,10 @@ app.get('/', async (req, res) => {
     // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
 
     console.log('começando')
-    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Hash_My.json", "HASH")
 
     //MYSQL
   /*
+
     await db.testManyWithIndex(1, c.createFullTextIndexMysql, false, "mysql", false)
 
     await runTestBattery(db, c.consultasItem2, false, "mysql", "con2NoIndex_My.json", false)
