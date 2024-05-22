@@ -36,7 +36,6 @@ O projeto é composto por um servidor escrito em JavaScript que realiza testes d
 
 3. Configure as credenciais dos SGBDs no arquivo `database.js`:
     ```js
-    module.exports = {
         mysql: {
             host: 'localhost',
             user: 'root',
@@ -49,7 +48,6 @@ O projeto é composto por um servidor escrito em JavaScript que realiza testes d
             password: 'sua-senha',
             database: 'nome-do-banco'
         }
-    };
     ```
 
 ## Uso
