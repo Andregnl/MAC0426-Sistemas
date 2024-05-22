@@ -42,8 +42,6 @@ def make_boxplot(source, chart_path, title):
 
     boxwidth = 0.25
 
-    print(source)
-
     json_data = open_json(source)
     data = []
     labels = []
@@ -63,7 +61,7 @@ def make_boxplot(source, chart_path, title):
 
 def make_barplot(source, chart_path):
     json_data = open_json(source)
-    print(json_data["Pg"].keys())
+    # print(json_data["Pg"].keys())
 
     pgData = []
     mySqlData = []
@@ -91,7 +89,7 @@ def make_barplot(source, chart_path):
                     mySqlData.append(mean(mySqlMean))
                     #print(bd + " | " + index + " | " + query + " " + str(m) + " " + str(d))
 
-    print(len(mySqlData), len(pgData))
+    # print(len(mySqlData), len(pgData))
     barwidth = 0.25
 
     # mySqlData = [1,2,3,4]
@@ -207,11 +205,11 @@ def main():
     files = list(set(filesNoRepeat))
     for i, file in enumerate(files):
         table_path = json_table_path(file)
-        print(table_path)
+        # print(table_path)
         mySql = file + "My.json"
         pg = file + "Pg.json"
         pathCsv = table_path.replace("_","") + ".csv"
-        print(mySql, pg, pathCsv)
+        # print(mySql, pg, pathCsv)
         try:
             make_table(mySql, pg, pathCsv)
         except Exception as e:

@@ -17,7 +17,7 @@ O projeto é composto por um servidor escrito em JavaScript que realiza testes d
 - `database.js`: Arquivo onde podem ser modificadas as configurações de acesso ao ambiente dos SGBDs.
 - `index.js`: Arquivo principal que inicia o servidor Node.js.
 - `queries.js`: Arquivo com a rotina de como as consultas são executadas.
-- `consultas/conj_consultas.jd`: Arquivo onde estão definidos as consultas e indíces a serem testados.
+- `consultas/conj_consultas.js`: Arquivo onde estão definidos as consultas e indíces a serem testados.
 - `resultProcess.py`: Script em Python para gerar gráficos com os resultados dos testes.
 - `resultOrganizer.py`: Script em Python para organizar os resultados dos testes em tabelas.
 
