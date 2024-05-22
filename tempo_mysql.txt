@@ -1,1 +1,0 @@
-{"SELECT \"Posts\".\"Id\", \"Posts\".\"Body\", \"PostTypes\".\"Type\" FROM \"Posts\" JOIN \"PostTypes\" ON \"Posts\".\"PostTypeId\" = \"PostTypes\".\"Id\" WHERE \"PostTypes\".\"Type\" LIKE 'Question'|no_index":["0.8625","0.9154"]}
