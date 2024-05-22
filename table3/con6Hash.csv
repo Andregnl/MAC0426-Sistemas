@@ -10,7 +10,7 @@ consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
         WHERE ""DownVotes"" = (SELECT MAX(""DownVotes"") FROM ""Users"")
       )
       AND ""VoteTypeId"" = 2
-    );";9,28409003225;6,970113394373177;0,25569004505;0,013684711221998755
+    );";9,28409003225;6,970113394373178;0,25569004505;0,013684711221998755
 "SELECT *
     FROM ""Posts"" 
     WHERE ""OwnerUserId"" IN (
@@ -40,7 +40,7 @@ consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
       FROM ""Users""
       WHERE ""Reputation"" = (SELECT MAX(""Reputation"") FROM ""Users"")
     ) AS ""U""
-    WHERE ""U"".""UpVotes"" = (SELECT MIN(""UpVotes"") FROM ""Users"" WHERE ""Reputation"" = (SELECT MAX(""Reputation"") FROM ""Users""));";0,1866140819;0,13644177439471125;0,32351902015;0,38115448691794135
+    WHERE ""U"".""UpVotes"" = (SELECT MIN(""UpVotes"") FROM ""Users"" WHERE ""Reputation"" = (SELECT MAX(""Reputation"") FROM ""Users""));";0,1866140819;0,13644177439471125;0,32351902015;0,3811544869179414
 "SELECT ""U"".""Id"", ""U"".""DisplayName"", ""U"".""CreationDate"", ""U"".""DownVotes""
     FROM (
       SELECT ""Id"", ""DisplayName"", ""DownVotes"", ""CreationDate""
@@ -48,7 +48,7 @@ consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
       WHERE ""CreationDate"" > '2010-01-01' AND ""CreationDate"" < '2010-07-01'
     ) AS ""U""
     WHERE ""DownVotes"" > 100
-    ORDER BY ""DownVotes"" DESC;";0,17852617695;0,1267152866752952;0,2491757965;0,012947891563048227
+    ORDER BY ""DownVotes"" DESC;";0,17852617695;0,12671528667529522;0,2491757965;0,01294789156304823
 "SELECT ""U"".""Id""
     FROM (
       SELECT ""Id"", ""DownVotes""

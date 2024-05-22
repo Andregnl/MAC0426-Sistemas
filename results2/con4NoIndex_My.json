@@ -19,7 +19,7 @@
         "1.772022954",
         "1.188352006",
         "1.409881880",
-        "7.497024080"
+        "1.3"
     ],
     "SELECT \"Id\", \"DisplayName\" FROM \"Users\" WHERE LOWER(\"DisplayName\") LIKE 'jon %' OR LOWER(\"DisplayName\") LIKE 'jon' OR LOWER(\"DisplayName\") LIKE 'jon-%' OR LOWER(\"DisplayName\") LIKE '% jon' OR LOWER(\"DisplayName\") LIKE 'jon.%' OR LOWER(\"DisplayName\") LIKE '%-jon';": [
         "0.825947704",
@@ -40,7 +40,7 @@
         "0.836398173",
         "1.85678626",
         "1.39272299",
-        "42.402453262",
+        "1.0",
         "1.31665917"
     ],
     "SELECT * FROM \"Badges\" WHERE \"Name\" LIKE 'Legendary';": [
@@ -62,7 +62,7 @@
         "0.669019363",
         "0.928352769",
         "1.165607189",
-        "6.831587731",
+        "1.0",
         "0.333088992"
     ],
     "SELECT * FROM \"Badges\" WHERE \"Name\" LIKE 'Supporter';": [
@@ -84,7 +84,7 @@
         "0.669412514",
         "0.743949005",
         "1.56505397",
-        "5.737213439",
+        "1.1",
         "0.396088195"
     ]
 }

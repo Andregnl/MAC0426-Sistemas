@@ -207,8 +207,8 @@ def main():
     #     chart_path = json_chart_path(file)
     #     make_boxplot(file,chart_path)
 
-    path = "/results2"
-    files = get_json_files(path)
+    file_path = os.getcwd() + "/results2"
+    files = get_json_files(file_path)
     filesNoRepeat = []
     for i, file in enumerate(files):
         newNameFile = file.replace("My.json","")
@@ -244,7 +244,7 @@ def extractBoxplotFromData(data, qry, index, folderName):
 
     ax.boxplot(val)
     ax.set_xticklabels(data.keys())
-    ax.set_title(qry)
+    ax.set_title()
     plt.close(fig)
     fig.savefig('./compareSameOpInDiffCenarios/' + folderName + '/' + str(index) + '.png')
 
@@ -259,11 +259,39 @@ def make_boxplot2(searchByOpJsonObj):
         extractBoxplotFromData(mySqlData, qry, i, 'MySql')
 
         i = i + 1
- 
+
+def make_boxplot_item4():
+    item4FullIndexPg = open('./results2/con4FullTextIndex_Pg.json')
+    item4FullIndexMy = open('./results2/con4FullTextIndex_My.json')
+    item4NoIndexPg = open('./results2/con4NoIndex_Pg.json')
+    item4NoIndexMy = open('./results2/con4NoIndex_My.json')
+
+    item4FullIndexPg = json.load(item4FullIndexPg)
+    item4FullIndexMy = json.load(item4FullIndexMy)
+    item4NoIndexPg = json.load(item4NoIndexPg)
+    item4NoIndexMy = json.load(item4NoIndexMy)
+
+    for i in range(4):
+        val1 = convert_list_float(list(item4FullIndexPg.values())[i])
+        val2 = convert_list_float(list(item4NoIndexPg.values())[i])
+
+        val3 = convert_list_float(list(item4FullIndexMy.values())[i])
+        val4 = convert_list_float(list(item4NoIndexMy.values())[i])
+
+        values = [val1, val2, val3, val4]
+        fig, ax = plt.subplots()
+
+        ax.boxplot(values)
+        ax.set_xticklabels(['FullIndexPg', 'NoIndexPg', 'FullIndexMySql', 'NoIndexMySql'])
+        ax.set_title('Item 4 consulta: ' + str(i))
+        plt.close(fig)
+        fig.savefig('./compareSameOpInDiffCenarios/Item4/consulta' + str(i) + '.png')
+
 def main2():
     f = open('./organizedResults/operationSearch.json')
     jsonObj = json.load(f)
     make_boxplot2(jsonObj)
 
 if __name__ =='__main__':
-    main2()
+    # make_boxplot_item4()
+    main()

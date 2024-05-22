@@ -1,5 +1,5 @@
 {
-    "SELECT \"Posts\".\"Id\", \"PostTypes\".\"Type\"\n    FROM \"Posts\"\n    JOIN \"PostTypes\" ON \"Posts\".\"PostTypeId\" = \"PostTypes\".\"Id\"\n    WHERE to_tsvector('english', \"PostTypes\".\"Type\") @@ to_tsquery('english', 'Question');": [
+    "SELECT \"Posts\".\"Id\", \"PostTypes\".\"Type\" FROM \"Posts\" JOIN \"PostTypes\" ON \"Posts\".\"PostTypeId\" = \"PostTypes\".\"Id\"\n    WHERE to_tsvector('english', \"PostTypes\".\"Type\") @@ to_tsquery('english', 'Question');": [
         "1.457740804",
         "1.397870576",
         "1.417029920",
@@ -21,7 +21,7 @@
         "1.438336310",
         "1.549852328"
     ],
-    "SELECT \"Id\", \"DisplayName\"\n    FROM \"Users\"\n    WHERE to_tsvector('english', \"DisplayName\") @@ to_tsquery('english', 'Jon');": [
+    "SELECT \"Id\", \"DisplayName\" FROM \"Users\" WHERE to_tsvector('english', \"DisplayName\") @@ to_tsquery('english', 'Jon');": [
         "0.8834653",
         "0.1558476",
         "0.1865485",
@@ -43,7 +43,7 @@
         "0.1704645",
         "0.1496096"
     ],
-    "SELECT *\n    FROM \"Badges\"\n    WHERE to_tsvector('english', \"Name\") @@ to_tsquery('english', 'Legendary');": [
+    "SELECT * FROM \"Badges\" WHERE to_tsvector('english', \"Name\") @@ to_tsquery('english', 'Legendary');": [
         "0.1245302",
         "0.554417",
         "0.648390",
@@ -65,7 +65,7 @@
         "0.709068",
         "0.599572"
     ],
-    "SELECT *\n    FROM \"Badges\"\n    WHERE to_tsvector('english', \"Name\") @@ to_tsquery('english', 'Supporter');": [
+    "SELECT * FROM \"Badges\" WHERE to_tsvector('english', \"Name\") @@ to_tsquery('english', 'Supporter');": [
         "0.316282474",
         "0.324843022",
         "0.338044925",

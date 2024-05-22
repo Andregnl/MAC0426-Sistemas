@@ -3,7 +3,7 @@ import { createPgConnectionPool, createMySqlConnectionPool } from './database.js
 import { Queries } from './queries.js'
 import fs from 'fs';
 
-import * as c from './consultas/conj_consultas.js'
+import * as c from './organizedResults/consultas/conj_consultas.js'
 
 let pgPool;
 let myPool;
@@ -53,11 +53,7 @@ app.get('/', async (req, res) => {
     // "Select * FROM Votes WHERE Id > 5503 AND Id < 1001375624;",
 
     console.log('começando')
-
-    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6NoIndex_My.json", false)
-
-    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6Hash_My.json", "HASH")
-  
+    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Hash_My.json", "HASH")
 
     //MYSQL
   /*

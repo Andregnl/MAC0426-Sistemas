@@ -4,7 +4,7 @@ consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
     INNER JOIN ""Badges"" ON ""Users"".""Id"" = ""Badges"".""UserId""
     WHERE ""Users"".""DownVotes"" > 100
     GROUP BY ""Users"".""Id""
-    ORDER BY ""badgeCount"" DESC;";2,38851569225;3,3258822393625795;0,42818982535;0,3685393796672374
+    ORDER BY ""badgeCount"" DESC;";2,38851569225;3,32588223936258;0,42818982535;0,3685393796672374
 "WITH ""MinCreationDateUsers"" AS (
       SELECT ""Id"", ""DownVotes""
       FROM ""Users""

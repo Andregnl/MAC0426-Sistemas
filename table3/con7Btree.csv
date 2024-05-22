@@ -12,7 +12,7 @@ consultas;mean mysql;desvio padrão mysql;mean postgres;desvio padrão postgres
     )
     SELECT ""U"".""Id""
     FROM ""MinCreationDateUsers"" AS ""U""
-    WHERE ""U"".""DownVotes"" = (SELECT MAX(""DownVotes"") FROM ""MinCreationDateUsers"");";0,51268534835;0,09162606662603083;0,3175885335;0,04941428492293737
+    WHERE ""U"".""DownVotes"" = (SELECT MAX(""DownVotes"") FROM ""MinCreationDateUsers"");";0,51268534835;0,09162606662603083;0,3175885335;0,04941428492293736
 "SELECT ""U"".""Id""
     FROM (
       SELECT ""Id"", ""DownVotes""
