@@ -47,17 +47,11 @@ def make_boxplot(source, chart_path, title):
     json_data = open_json(source)
     data = []
     labels = []
-    with open("output.txt","w") as file:
-        for key in json_data:
-            row = convert_list_float(json_data[key])
-            data.append(row)
-            labels.append(key)
-            for element2 in row:
-                file.write(str(element2))
-                file.write("\n")
-            file.write("new")
-    file.close()
-
+    for key in json_data:
+        row = convert_list_float(json_data[key])
+        data.append(row)
+        labels.append(key)
+        
     plt.boxplot(data,widths=boxwidth)
 
     plt.xlabel('Testes ', fontsize = 15)
@@ -175,7 +169,7 @@ def json_chart_path(source):
 
 def json_table_path(source):
     path = source.replace("json","csv")
-    path = path.replace("results2","table3")
+    path = path.replace("results","table")
     return path
 
 def get_json_files(path):
@@ -194,20 +188,15 @@ def chart_title(file, file_path):
 
 
 def main():
-    file_path = os.getcwd() + "/results2"
+    file_path = os.getcwd() + "/results"
     files = get_json_files(file_path)
     for i,file in enumerate(files):
         chart_path = json_chart_path(file)
         name = chart_title(file, file_path)
         make_boxplot(file,chart_path, name)
 
-    # path = "/results2"
-    # files = get_json_files(path)
-    # for i,file in enumerate(files):
-    #     chart_path = json_chart_path(file)
-    #     make_boxplot(file,chart_path)
 
-    file_path = os.getcwd() + "/results2"
+    file_path = os.getcwd() + "/results"
     files = get_json_files(file_path)
     filesNoRepeat = []
     for i, file in enumerate(files):
@@ -228,9 +217,9 @@ def main():
         except Exception as e:
             print(e)
 
-    # file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
-    # chart_path= json_chart_path(file)
-    # make_barplot(file,chart_path)
+    file = '/home/gu/git/MAC0426-Sistemas/organizedResults/enviromentSearch.json'
+    chart_path= json_chart_path(file)
+    make_barplot(file,chart_path)
 
 def extractBoxplotFromData(data, qry, index, folderName):
     fig, ax = plt.subplots()
@@ -259,10 +248,10 @@ def make_boxplot2(searchByOpJsonObj):
         i = i + 1
 
 def make_boxplot_item4():
-    item4FullIndexPg = open('./results2/con4FullTextIndex_Pg.json')
-    item4FullIndexMy = open('./results2/con4FullTextIndex_My.json')
-    item4NoIndexPg = open('./results2/con4NoIndex_Pg.json')
-    item4NoIndexMy = open('./results2/con4NoIndex_My.json')
+    item4FullIndexPg = open('./results/con4FullTextIndex_Pg.json')
+    item4FullIndexMy = open('./results/con4FullTextIndex_My.json')
+    item4NoIndexPg = open('./results/con4NoIndex_Pg.json')
+    item4NoIndexMy = open('./results/con4NoIndex_My.json')
 
     item4FullIndexPg = json.load(item4FullIndexPg)
     item4FullIndexMy = json.load(item4FullIndexMy)

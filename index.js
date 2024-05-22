@@ -3,7 +3,7 @@ import { createPgConnectionPool, createMySqlConnectionPool } from './database.js
 import { Queries } from './queries.js'
 import fs from 'fs';
 
-import * as c from './organizedResults/consultas/conj_consultas.js'
+import * as c from './consultas/conj_consultas.js'
 
 let pgPool;
 let myPool;
@@ -45,7 +45,6 @@ const db = new Queries(pgPool, myPool)
 
 
 app.get('/', async (req, res) => {
-    console.log("Requisição recebida")	
 
     var testResults = []
     let results = []
@@ -53,20 +52,25 @@ app.get('/', async (req, res) => {
     console.log('começando')
 
     //MYSQL
+    
+
     await db.testManyWithIndex(1, c.createFullTextIndexMysql, false, "mysql", false)
-
+    
+    await runTestBattery(db, c.consultasItem1, false, "mysql", "con1NoIndex_My.json", false)
     await runTestBattery(db, c.consultasItem2, false, "mysql", "con2NoIndex_My.json", false)
-    await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem3, false, "mysql", "con3NoIndex_My.json", false)
     await runTestBattery(db, c.consultasItem4, false, "mysql", "con4NoIndex_My.json", false)
-    await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5NoIndex_My.json", false)
-    await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6NoIndex_My.json", false)
-    await runTestBattery(db, c.consultasItem7, c.indexesItem7, "mysql", "con7NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem5, false, "mysql", "con5NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem6, false, "mysql", "con6NoIndex_My.json", false)
+    await runTestBattery(db, c.consultasItem7, false, "mysql", "con7NoIndex_My.json", false)
 
+    await runTestBattery(db, c.consultasItem1, c.indexesItem1, "mysql", "con1Hash_My.json", "HASH")
     await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3Hash_My.json", "HASH")
     await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Hash_My.json", "HASH")
     await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6Hash_My.json", "HASH")
     await runTestBattery(db, c.consultasItem7, c.indexesItem7, "mysql", "con7Hash_My.json", "HASH")
 
+    await runTestBattery(db, c.consultasItem1, c.indexesItem1, "mysql", "con1Btree_My.json", "BTREE")
     await runTestBattery(db, c.consultasItem3, c.indexesItem3, "mysql", "con3Btree_My.json", "BTREE")
     await runTestBattery(db, c.consultasItem5, c.indexesItem5, "mysql", "con5Btree_My.json", "BTREE")
     await runTestBattery(db, c.consultasItem6, c.indexesItem6, "mysql", "con6Btree_My.json", "BTREE")
@@ -79,6 +83,7 @@ app.get('/', async (req, res) => {
     //POSTGRES
     await db.testManyWithIndex(1, c.createFullTextIndexPostgres, false, "pg", false)
 
+    await runTestBattery(db, c.consultasItem1, false, "pg", "con1NoIndex_Pg.json", false)
     await runTestBattery(db, c.consultasItem2, false, "pg", "con2NoIndex_Pg.json", false)
     await runTestBattery(db, c.consultasItem3, false, "pg", "con3NoIndex_Pg.json", false)
     await runTestBattery(db, c.consultasItem4, false, "pg", "con4NoIndex_Pg.json", false)
@@ -86,11 +91,13 @@ app.get('/', async (req, res) => {
     await runTestBattery(db, c.consultasItem6, false, "pg", "con6NoIndex_Pg.json", false)
     await runTestBattery(db, c.consultasItem7, false, "pg", "con7NoIndex_Pg.json", false)
 
+    await runTestBattery(db, c.consultasItem1, c.indexesItem1, "pg", "con1Hash_Pg.json", "HASH")
     await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3Hash_Pg.json", "HASH")
     await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5Hash_Pg.json", "HASH")
     await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6Hash_Pg.json", "HASH")
     await runTestBattery(db, c.consultasItem7, c.indexesItem7, "pg", "con7Hash_Pg.json", "HASH")
 
+    await runTestBattery(db, c.consultasItem1, c.indexesItem1, "pg", "con1Btree_Pg.json", "BTREE")
     await runTestBattery(db, c.consultasItem3, c.indexesItem3, "pg", "con3Btree_Pg.json", "BTREE")
     await runTestBattery(db, c.consultasItem5, c.indexesItem5, "pg", "con5Btree_Pg.json", "BTREE")
     await runTestBattery(db, c.consultasItem6, c.indexesItem6, "pg", "con6Btree_Pg.json", "BTREE")
@@ -101,16 +108,6 @@ app.get('/', async (req, res) => {
     await db.testManyWithIndex(1, c.dropFullTextIndexPostgres, false, "pg", false)
 
     console.log("terminei");
-    // try {
-    //     fs.unlinkSync('tempo_postgres.txt');
-    // }
-    // catch (err) {
-    //     console.error(err)
-    // }
-
-    // results = await db.testManyWithIndex(2, allTests, "pg");
-
-    // fs.appendFileSync(`tempo_postgres.txt`, JSON.stringify(results) + '\n');
     res.send("Ok")
 
 })
